@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e40af">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Laboratorio AR23 - Chimica e Microbiologia</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#1f2937;padding-bottom:70px}
+input,select,textarea{font-size:16px!important}
+@media(min-width:640px){input,select,textarea{font-size:14px!important}}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:3px}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:40;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.header-inner{display:flex;justify-content:space-between;align-items:center;max-width:1024px;margin:0 auto}
+.header h1{font-size:18px;font-weight:700;line-height:1.2}
+.header-sub{font-size:11px;opacity:.85}
+.header-right{text-align:right;font-size:12px}
+
+/* Navigation */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;z-index:50;box-shadow:0 -2px 8px rgba(0,0,0,.08);display:flex}
+.tab-btn{flex:1;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#6b7280;cursor:pointer;transition:all .2s;font-size:10px;font-weight:500}
+.tab-btn.active{color:#2563eb;background:#eff6ff}
+.tab-btn .icon{font-size:20px}
+
+/* Content */
+.content{max-width:1024px;margin:0 auto;padding:16px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Cards */
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;text-align:center}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:all .2s;width:100%}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-primary:hover{background:#1d4ed8}
+.btn-success{background:#16a34a;color:#fff}
+.btn-success:hover{background:#15803d}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-secondary{background:#e5e7eb;color:#374151}
+.btn-secondary:hover{background:#d1d5db}
+.btn-sm{padding:6px 10px;font-size:12px;width:auto}
+
+/* Inputs */
+.input,.select,.textarea{width:100%;padding:12px 16px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;transition:all .2s}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.textarea{min-height:80px;resize:vertical;font-family:inherit}
+.form-group{margin-bottom:12px}
+.form-label{display:block;margin-bottom:4px;font-size:13px;font-weight:500;color:#374151}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:640px){.grid-3{grid-template-columns:repeat(2,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
+
+/* Home */
+.hero{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+.hero h2{font-size:24px;margin-bottom:4px}
+.hero p{opacity:.9;font-size:14px}
+.hero-stat{margin-top:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;font-size:14px}
+
+/* Quick Actions */
+.action-card{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;border-radius:12px;padding:16px;text-align:left;cursor:pointer;transition:all .2s;border:none;width:100%;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.action-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.action-card:active{transform:scale(.98)}
+.action-icon{font-size:28px;margin-bottom:8px}
+.action-title{font-size:14px;font-weight:600}
+.action-badge{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.25);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700}
+
+/* Stats */
+.stat-card{background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid #e5e7eb}
+.stat-number{font-size:28px;font-weight:700}
+.stat-label{font-size:11px;color:#6b7280;margin-top:2px}
+
+/* List items */
+.list-item{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.list-item-content{flex:1;min-width:0}
+.list-item-title{font-weight:600;color:#1f2937;font-size:14px}
+.list-item-sub{font-size:12px;color:#6b7280;margin-top:2px}
+.list-item-actions{display:flex;gap:4px}
+.icon-btn{padding:6px;background:none;border:none;cursor:pointer;border-radius:6px;color:#6b7280;transition:all .2s}
+.icon-btn:hover{background:#f3f4f6}
+.icon-btn.danger{color:#dc2626}
+.icon-btn.danger:hover{background:#fef2f2}
+.icon-btn.primary{color:#2563eb}
+.icon-btn.primary:hover{background:#eff6ff}
+
+/* Badge */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-yellow{background:#fef3c7;color:#92400e}
+.badge-purple{background:#f3e8ff;color:#6b21a8}
+.badge-gray{background:#f3f4f6;color:#374151}
+
+/* Alert */
+.alert{border-radius:8px;padding:12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.alert-warning{background:#fef3c7;border:1px solid #fcd34d;color:#78350f}
+.alert-info{background:#dbeafe;border:1px solid #93c5fd;color:#1e3a8a}
+.alert-success{background:#dcfce7;border:1px solid #86efac;color:#14532d}
+.alert-danger{background:#fee2e2;border:1px solid #fca5a5;color:#7f1d1d}
+
+/* Tabs within sections */
+.sub-tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px}
+.sub-tab{padding:8px 12px;border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;border:none;background:#f3f4f6;color:#374151;transition:all .2s}
+.sub-tab.active{background:#2563eb;color:#fff}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:16px;padding:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+
+/* GHS Pictograms */
+.ghs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(min-width:640px){.ghs-grid{grid-template-columns:repeat(5,1fr)}}
+.ghs-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:8px;cursor:pointer;transition:all .2s;background:none;border:none}
+.ghs-item:hover{background:#f3f4f6}
+.ghs-label{font-size:10px;text-align:center;color:#374151;font-weight:500;line-height:1.2}
+
+/* Periodic Table */
+.element{aspect-ratio:1;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;cursor:pointer;transition:all .2s;border:none;font-size:10px;padding:2px}
+.element:hover{opacity:.8;transform:scale(1.05)}
+.element-num{font-size:8px;line-height:1}
+.element-sym{font-size:12px;font-weight:700;line-height:1.2}
+
+/* Timer */
+.timer-display{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px}
+.timer-time{font-size:48px;font-weight:700;font-family:'Courier New',monospace;color:#1e40af}
+.timer-progress{width:100%;height:8px;background:#bfdbfe;border-radius:4px;margin-top:12px;overflow:hidden}
+.timer-progress-bar{height:100%;background:#2563eb;transition:width 1s linear;border-radius:4px}
+
+/* Checklist */
+.checklist-item{display:flex;align-items:center;gap:12px;padding:12px;background:#f9fafb;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .2s;border:none;width:100%;text-align:left}
+.checklist-item:hover{background:#f3f4f6}
+.checklist-item.checked{background:#f0fdf4}
+.checklist-item.checked .checklist-text{text-decoration:line-through;color:#6b7280}
+.checklist-text{flex:1;font-size:14px;color:#1f2937}
+
+/* pH Scale */
+.ph-scale{display:flex;height:24px;border-radius:8px;overflow:hidden;margin-top:8px}
+.ph-scale div{flex:1}
+.ph-result{text-align:center;padding:16px;border-radius:8px;margin-top:12px}
+
+/* Illustration */
+.lab-illustration{width:100%;height:180px;border-radius:16px;margin-bottom:16px;overflow:hidden;background:linear-gradient(135deg,#eff6ff,#fdf4ff,#fce7f3)}
+
+/* Disclaimer */
+.disclaimer{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-top:24px;font-size:12px;color:#6b7280;line-height:1.6}
+.disclaimer-title{font-size:12px;font-weight:700;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.disclaimer-sig{text-align:right;margin-top:12px;padding-top:12px;border-top:1px solid #e5e7eb;font-style:italic}
+
+/* Emergency */
+.emergency-box{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border-radius:12px;padding:16px;margin-bottom:16px}
+.emergency-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.emergency-item{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:8px;padding:12px}
+.emergency-label{font-size:11px;opacity:.9}
+.emergency-number{font-size:24px;font-weight:700;margin-top:2px}
+
+/* Accordion */
+.accordion{border:2px solid;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.accordion-header{padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;background:none;border:none;width:100%;text-align:left;font-size:14px;font-weight:600;color:#1f2937}
+.accordion-content{padding:0 16px 16px;border-top:1px solid #e5e7eb;display:none}
+.accordion.open .accordion-content{display:block}
+.accordion ol{margin-left:20px;margin-top:12px}
+.accordion li{margin:8px 0;font-size:13px;color:#374151;line-height:1.5}
+
+/* PDF Viewer */
+.pdf-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:8px}
+.pdf-icon{width:40px;height:40px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#dc2626;font-size:20px;flex-shrink:0}
+.pdf-info{flex:1;min-width:0}
+.pdf-name{font-weight:500;font-size:14px;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdf-date{font-size:12px;color:#6b7280}
+
+/* Search */
+.search-box{position:relative;margin-bottom:12px}
+.search-box input{padding-left:40px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:16px}
+
+/* Empty state */
+.empty-state{text-align:center;padding:48px 16px;color:#6b7280}
+.empty-state-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty-state-title{font-size:16px;font-weight:500;margin-bottom:4px}
+.empty-state-sub{font-size:13px}
+
+/* Result box */
+.result{background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;margin-top:12px;font-size:14px;color:#14532d}
+.result strong{color:#166534}
+
+/* Prenotazione card */
+.prenotazione{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:8px}
+.prenotazione.completed{opacity:.6;border-color:#86efac}
+.prenotazione-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.prenotazione-meta{display:flex;gap:12px;font-size:12px;color:#6b7280;flex-wrap:wrap;margin-bottom:8px}
+.prenotazione-details{font-size:12px;color:#374151;line-height:1.6}
+
+@media(max-width:480px){.tab-btn{font-size:9px;padding:6px 1px}.tab-btn .icon{font-size:18px}}
+a[href*="netlify.com"]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+<div class="header-inner">
+<div>
+<h1>Laboratorio AR23</h1>
+<div class="header-sub">Chimica e Microbiologia</div>
+</div>
+<div class="header-right">
+<div style="opacity:.85;font-size:11px">Assistente Tecnico</div>
+<div id="headerDate" style="font-weight:500"></div>
+</div>
+</div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+<!-- HOME TAB -->
+<div id="tab-home" class="tab-content active">
+<div class="hero">
+<h2 id="greeting">Benvenuto 👋</h2>
+<p id="todayDate"></p>
+<div class="hero-stat">📅 <span id="todayActivities">0</span> attività programmate per oggi</div>
+</div>
+
+<!-- Lab Illustration (animata) -->
+<div class="lab-illustration">
+<svg viewBox="0 0 400 180" style="width:100%;height:100%">
+<defs>
+<linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".85"/><stop offset="1" stop-color="#1e40af"/></linearGradient>
+<linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10b981" stop-opacity=".85"/><stop offset="1" stop-color="#059669"/></linearGradient>
+<linearGradient id="lg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f59e0b" stop-opacity=".85"/><stop offset="1" stop-color="#d97706"/></linearGradient>
+<linearGradient id="flameG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3b82f6"/><stop offset=".6" stop-color="#f59e0b"/><stop offset="1" stop-color="#fde047"/></linearGradient>
+</defs>
+<rect x="0" y="140" width="400" height="40" fill="#e5e7eb"/><rect x="0" y="138" width="400" height="4" fill="#9ca3af"/>
+<g transform="translate(40,70)"><path d="M0 0 L0 70 Q0 75 5 75 L45 75 Q50 75 50 70 L50 0" fill="none" stroke="#64748b" stroke-width="2"/><rect x="5" y="30" width="40" height="40" fill="url(#lg1)" opacity=".75"/><circle cx="15" cy="60" r="2.5" fill="#fff" opacity=".7"><animate attributeName="cy" values="65;35" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="30" cy="60" r="2" fill="#fff" opacity=".7"><animate attributeName="cy" values="68;38" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="1.8s" repeatCount="indefinite"/></circle><circle cx="24" cy="60" r="1.6" fill="#fff" opacity=".7"><animate attributeName="cy" values="66;40" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="2.6s" repeatCount="indefinite"/></circle></g>
+<g transform="translate(52,120)"><rect x="8" y="10" width="8" height="18" fill="#4b5563"/><path d="M12 10 Q6 0 12 -8 Q18 0 12 10 Z" fill="url(#flameG)"><animate attributeName="d" values="M12 10 Q6 0 12 -8 Q18 0 12 10 Z;M12 10 Q4 -2 12 -12 Q20 -2 12 10 Z;M12 10 Q6 0 12 -8 Q18 0 12 10 Z" dur="0.9s" repeatCount="indefinite"/></path></g>
+<g transform="translate(130,60)"><path d="M20 0 L20 30 L0 70 Q0 75 5 75 L45 75 Q50 75 50 70 L30 30 L30 0" fill="none" stroke="#64748b" stroke-width="2"/><path d="M5 50 L15 35 L35 35 L45 50 L45 70 Q45 75 40 75 L10 75 Q5 75 5 70 Z" fill="url(#lg2)" opacity=".75"/><circle cx="22" cy="65" r="2" fill="#fff" opacity=".7"><animate attributeName="cy" values="68;42" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="2s" repeatCount="indefinite"/></circle></g>
+<g transform="translate(210,80)"><rect x="0" y="55" width="80" height="8" fill="#9ca3af" rx="2"/><rect x="5" y="60" width="3" height="15" fill="#6b7280"/><rect x="72" y="60" width="3" height="15" fill="#6b7280"/><g transform="translate(15,0)"><path d="M0 0 L0 50 Q0 55 5 55 Q10 55 10 50 L10 0" fill="none" stroke="#64748b" stroke-width="1.5"/><rect x="1" y="25" width="8" height="28" fill="url(#lg3)" opacity=".8" rx="4"><animate attributeName="y" values="25;22;25" dur="3s" repeatCount="indefinite"/></rect></g><g transform="translate(30,0)"><path d="M0 0 L0 50 Q0 55 5 55 Q10 55 10 50 L10 0" fill="none" stroke="#64748b" stroke-width="1.5"/><rect x="1" y="30" width="8" height="23" fill="#ec4899" opacity=".8" rx="4"><animate attributeName="y" values="30;27;30" dur="2.4s" repeatCount="indefinite"/></rect></g><g transform="translate(45,0)"><path d="M0 0 L0 50 Q0 55 5 55 Q10 55 10 50 L10 0" fill="none" stroke="#64748b" stroke-width="1.5"/><rect x="1" y="20" width="8" height="33" fill="#8b5cf6" opacity=".8" rx="4"><animate attributeName="y" values="20;24;20" dur="2.8s" repeatCount="indefinite"/></rect></g><g transform="translate(60,0)"><path d="M0 0 L0 50 Q0 55 5 55 Q10 55 10 50 L10 0" fill="none" stroke="#64748b" stroke-width="1.5"/><rect x="1" y="35" width="8" height="18" fill="#06b6d4" opacity=".8" rx="4"><animate attributeName="y" values="35;32;35" dur="3.4s" repeatCount="indefinite"/></rect></g></g>
+<g transform="translate(320,50)"><ellipse cx="30" cy="88" rx="25" ry="5" fill="#374151"/><rect x="25" y="70" width="10" height="20" fill="#4b5563"/><path d="M30 70 Q30 50 40 40 L45 40" fill="none" stroke="#4b5563" stroke-width="8" stroke-linecap="round"/><rect x="42" y="30" width="8" height="15" fill="#1f2937" rx="2"/><ellipse cx="46" cy="28" rx="5" ry="3" fill="#374151"/><rect x="20" y="60" width="25" height="3" fill="#6b7280"/><circle cx="32" cy="55" r="6" fill="#fde047" opacity=".5"><animate attributeName="opacity" values=".2;.8;.2" dur="2s" repeatCount="indefinite"/></circle><circle cx="32" cy="55" r="3" fill="#3b82f6"/></g>
+<g transform="translate(350,25)" opacity=".5"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/><circle cx="0" cy="0" r="3" fill="#f59e0b"/><ellipse cx="0" cy="0" rx="15" ry="5" fill="none" stroke="#f59e0b" stroke-width="1"/><ellipse cx="0" cy="0" rx="15" ry="5" fill="none" stroke="#f59e0b" stroke-width="1" transform="rotate(60)"/><ellipse cx="0" cy="0" rx="15" ry="5" fill="none" stroke="#f59e0b" stroke-width="1" transform="rotate(120)"/><circle cx="15" cy="0" r="2" fill="#f59e0b"><animate attributeName="opacity" values="1;.3;1" dur="1.5s" repeatCount="indefinite"/></circle></g></g>
+<g transform="translate(30,25)" opacity=".4"><circle cx="0" cy="0" r="5" fill="#3b82f6"/><circle cx="15" cy="-5" r="4" fill="#ef4444"/><circle cx="15" cy="10" r="4" fill="#ef4444"/><line x1="0" y1="0" x2="15" y2="-5" stroke="#64748b" stroke-width="1.5"/><line x1="0" y1="0" x2="15" y2="10" stroke="#64748b" stroke-width="1.5"><animate attributeName="x2" values="15;17;15" dur="3s" repeatCount="indefinite"/></line></g>
+<g transform="translate(160,15)" opacity=".35"><path d="M0 0 Q8 8 0 16 Q-8 24 0 32" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" values="0;-16" dur="1.6s" repeatCount="indefinite"/></path><path d="M14 0 Q6 8 14 16 Q22 24 14 32" fill="none" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" values="0;-16" dur="2s" repeatCount="indefinite"/></path></g>
+</svg>
+</div>
+
+<!-- Stats -->
+<div class="grid-2" style="margin-bottom:16px">
+<div class="stat-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:32px;color:#16a34a">✓</span></div><div class="stat-number" style="color:#16a34a" id="statOk">0</div><div class="stat-label">Strumenti OK</div></div>
+<div class="stat-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:32px;color:#f59e0b">⚠</span></div><div class="stat-number" style="color:#f59e0b" id="statWarn">0</div><div class="stat-label">Attenzione</div></div>
+</div>
+
+<!-- Quick Actions -->
+<h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Accesso Rapido</h3>
+<div class="grid-2" style="margin-bottom:16px">
+<button class="action-card" style="--c1:#3b82f6;--c2:#2563eb;position:relative" onclick="switchTab('prenotazioni')"><div class="action-icon">📅</div><div class="action-title">Prenotazioni</div><div class="action-badge" id="badgePrenotazioni">0</div></button>
+<button class="action-card" style="--c1:#16a34a;--c2:#15803d;position:relative" onclick="switchTab('magazzino')"><div class="action-icon">📊</div><div class="action-title">Magazzino</div><div class="action-badge" id="badgeMagazzino">0</div></button>
+<button class="action-card" style="--c1:#9333ea;--c2:#7e22ce" onclick="switchTab('calcoli')"><div class="action-icon">⚗️</div><div class="action-title">Calcoli</div></button>
+<button class="action-card" style="--c1:#ea580c;--c2:#c2410c" onclick="switchTab('strumenti')"><div class="action-icon">🧫</div><div class="action-title">Strumenti</div></button>
+<button class="action-card" style="--c1:#0d9488;--c2:#0f766e" onclick="switchTab('tavola')"><div class="action-icon">⚛️</div><div class="action-title">Tavola Periodica</div></button>
+<button class="action-card" style="--c1:#db2777;--c2:#be185d" onclick="switchTab('pdf')"><div class="action-icon">📄</div><div class="action-title">Documenti</div></button>
+<button class="action-card" style="--c1:#0891b2;--c2:#0e7490" onclick="switchTab('composti')"><div class="action-icon">📖</div><div class="action-title">Composti & Acronimi</div></button>
+</div>
+
+<!-- Safety reminder -->
+<div class="alert alert-warning">
+<span style="font-size:20px">⚠️</span>
+<div><strong>Promemoria Sicurezza</strong><br>• Verificare sempre le incompatibilità chimiche<br>• Indossare DPI prima di manipolare reagenti<br>• Controllare il funzionamento delle cappe aspiranti</div>
+</div>
+
+<!-- Tip -->
+<div class="alert alert-info">
+<span style="font-size:20px">💡</span>
+<div><strong>Suggerimento del Giorno</strong><br>Prima di preparare una soluzione, controllare sempre la scheda di sicurezza (SDS) del reagente. Verificare la compatibilità con altri prodotti chimici presenti in laboratorio.</div>
+</div>
+
+<!-- Ringraziamento -->
+<div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:2px solid #93c5fd;border-radius:12px;padding:20px;margin:24px 0;text-align:center">
+<div style="font-size:32px;margin-bottom:12px">🙏</div>
+<h3 style="font-size:16px;font-weight:700;color:#1e40af;margin-bottom:12px">Un Ringraziamento Speciale</h3>
+<p style="font-size:14px;color:#1e3a8a;line-height:1.7;margin-bottom:12px">
+<strong>A tutti i Tecnici e le Tecniche di Laboratorio esperti</strong> che con pazienza e professionalità guidano i nuovi assistenti tecnici nei loro primi passi.<br><br>
+Come nuova arrivata, comprendo quanto sia prezioso avere accanto qualcuno che insegna il mestiere con calma e competenza. Il vostro sapere, trasmesso con generosità, è il fondamento su cui noi novizi costruiamo le nostre competenze.<br><br>
+<strong>Grazie</strong> per ogni spiegazione data con pazienza e per ogni competenza trasmessa con il cuore.
+</p>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid #93c5fd;font-style:italic;color:#1e40af;font-size:13px">
+"Il vero maestro non è colui che sa tutto, ma colui che sa trasmettere il proprio sapere con il cuore."
+</div>
+<div style="margin-top:12px;font-weight:700;color:#1e40af">— Con stima e gratitudine, V.F.</div>
+</div>
+
+<!-- Disclaimer -->
+<div class="disclaimer">
+<div class="disclaimer-title">⚠️ AVVISO LEGALE</div>
+<p>Questa applicazione è uno <strong>strumento di supporto gratuito</strong> realizzato per facilitare il lavoro quotidiano degli Assistenti Tecnici di Laboratorio. Le informazioni, i calcoli e le procedure presenti hanno <strong>carattere puramente indicativo</strong> e non sostituiscono la competenza professionale, la formazione specifica e il giudizio dell'operatore.</p>
+<p style="margin-top:8px"><strong>L'utilizzatore è tenuto a:</strong> verificare l'accuratezza di dati e calcoli prima dell'uso; consultare le fonti ufficiali (Schede di Sicurezza, normative vigenti); applicare la propria competenza professionale in ogni situazione; assumersi la piena responsabilità delle decisioni operative.</p>
+<p style="margin-top:8px"><strong>L'autore non si assume alcuna responsabilità</strong> per errori, imprecisioni o conseguenze derivanti dall'utilizzo di questo strumento. L'uso dell'applicazione implica l'accettazione integrale delle presenti condizioni.</p>
+<div class="disclaimer-sig">Buon lavoro! 🧪<br><strong>— V.F.</strong></div>
+</div>
+</div>
+
+<!-- MAGAZZINO TAB -->
+<div id="tab-magazzino" class="tab-content">
+<h2 class="card-title">📊 Magazzino Reagenti</h2>
+<div class="search-box"><span class="search-icon">🔍</span><input class="input" id="searchMagazzino" placeholder="Cerca per nome, formula o posizione..." oninput="renderMagazzino()"></div>
+<div class="form-group"><select class="select" id="filterMagazzino" onchange="renderMagazzino()"><option value="tutte">Tutte le categorie</option><option value="acido">Acidi</option><option value="base">Basi</option><option value="solvente">Solventi</option><option value="indicatore">Indicatori</option><option value="sale">Sali</option><option value="altro">Altro</option></select></div>
+<button class="btn btn-primary" onclick="openMagazzinoForm()">➕ Aggiungi Reagente</button>
+<div class="alert alert-warning" style="margin-top:12px"><span style="font-size:18px">⚠️</span><div><strong>Attenzione:</strong> Conservare acidi e basi separatamente. Solventi infiammabili lontano da ossidanti. Acidi concentrati: aggiungere sempre l'acido all'acqua, mai il contrario.</div></div>
+<div id="magazzinoList" style="margin-top:12px"></div>
+</div>
+
+<!-- CALCOLI TAB -->
+<div id="tab-calcoli" class="tab-content">
+<h2 class="card-title">⚗️ Calcolatore Chimico</h2>
+<div class="sub-tabs">
+<button class="sub-tab active" data-calc="diluizione" onclick="switchCalc(this)">🧪 Diluizione</button>
+<button class="sub-tab" data-calc="solido" onclick="switchCalc(this)">⚖️ Da Solido</button>
+<button class="sub-tab" data-calc="percentuale" onclick="switchCalc(this)">% Soluzione</button>
+<button class="sub-tab" data-calc="ph" onclick="switchCalc(this)">💧 pH</button>
+<button class="sub-tab" data-calc="gel" onclick="switchCalc(this)">🧬 Gel</button>
+<button class="sub-tab" data-calc="terreni" onclick="switchCalc(this)">🧫 Terreni</button>
+<button class="sub-tab" data-calc="mm" onclick="switchCalc(this)">⚖️ Massa Molare</button>
+</div>
+<div id="calcContent"></div>
+</div>
+
+<!-- STRUMENTI TAB -->
+<div id="tab-strumenti" class="tab-content">
+<h2 class="card-title">🧫 Strumenti & Vetreria</h2>
+<div class="grid-4" style="margin-bottom:16px">
+<div class="stat-card"><div class="stat-number" id="statTot">0</div><div class="stat-label">Totale</div></div>
+<div class="stat-card"><div class="stat-number" style="color:#16a34a" id="statIntegri">0</div><div class="stat-label">OK</div></div>
+<div class="stat-card"><div class="stat-number" style="color:#f59e0b" id="statCalibrare">0</div><div class="stat-label">Calibrare</div></div>
+<div class="stat-card"><div class="stat-number" style="color:#dc2626" id="statDann">0</div><div class="stat-label">Danneggiati</div></div>
+</div>
+<div class="search-box"><span class="search-icon">🔍</span><input class="input" id="searchStrumenti" placeholder="Cerca strumento..." oninput="renderStrumenti()"></div>
+<div class="grid-2" style="margin-bottom:12px">
+<select class="select" id="filterStrumentiTipo" onchange="renderStrumenti()"><option value="tutti">Tutti i tipi</option><option value="vetreria">Vetreria</option><option value="apparecchiatura">Apparecchiatura</option><option value="accessorio">Accessorio</option></select>
+<select class="select" id="filterStrumentiStato" onchange="renderStrumenti()"><option value="tutti">Tutti gli stati</option><option value="integro">Integro</option><option value="da-calibrare">Da calibrare</option><option value="da-pulire">Da pulire</option><option value="danneggiato">Danneggiato</option></select>
+</div>
+<button class="btn btn-primary" onclick="openStrumentiForm()">➕ Aggiungi Strumento</button>
+<div id="strumentiList" style="margin-top:12px"></div>
+</div>
+
+<!-- SICUREZZA TAB -->
+<div id="tab-sicurezza" class="tab-content">
+<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
+<div style="font-size:48px;line-height:1">⚠️</div>
+<div><h2 style="font-size:18px;font-weight:700;line-height:1.2">Sicurezza</h2><h2 style="font-size:18px;font-weight:700;line-height:1.2">Pittogrammi</h2></div>
+</div>
+<div class="card">
+<h3 style="font-size:14px;font-weight:700;margin-bottom:4px">⚠️ Pittogrammi di Pericolo GHS/CLP</h3>
+<p style="font-size:11px;color:#6b7280;margin-bottom:12px">Sistema armonizzato globalmente (GHS) - Regolamento CLP (CE) n. 1272/2008</p>
+<div class="ghs-grid" id="ghsGrid"></div>
+</div>
+
+<!-- Generatore Etichette CLP/GHS -->
+<div class="card">
+<h3 style="font-size:14px;font-weight:700;margin-bottom:8px">🏷️ Generatore Etichette CLP/GHS</h3>
+<p style="font-size:11px;color:#6b7280;margin-bottom:12px">Compila, scegli i pittogrammi e stampa: etichetta pronta da incollare sul contenitore.</p>
+<div class="form-group"><label class="form-label">Nome sostanza / soluzione *</label><input class="input" id="etNome" placeholder="Es. Acido cloridrico 1 mol/L"></div>
+<div class="grid-2">
+<div class="form-group"><label class="form-label">Concentrazione</label><input class="input" id="etConc" placeholder="Es. 1 M / 37%"></div>
+<div class="form-group"><label class="form-label">Data preparazione</label><input class="input" type="date" id="etData"></div>
+</div>
+<label class="form-label">Pittogrammi di pericolo (clicca per selezionare)</label>
+<div id="etGhsPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px"></div>
+<div class="form-group"><label class="form-label">Indicazioni di pericolo / note (frasi H)</label><input class="input" id="etNote" placeholder="Es. H314: provoca gravi ustioni cutanee"></div>
+<button class="btn btn-primary" onclick="stampaEtichetta()">🖨️ Genera e Stampa Etichetta</button>
+</div>
+
+<!-- Emergency -->
+<div class="emergency-box">
+<h3 style="font-size:16px;font-weight:700;margin-bottom:4px">📞 Numeri di Emergenza</h3>
+<div class="emergency-grid">
+<div class="emergency-item"><div class="emergency-label">Emergenze</div><div class="emergency-number">112</div></div>
+<div class="emergency-item"><div class="emergency-label">Vigili del Fuoco</div><div class="emergency-number">115</div></div>
+<div class="emergency-item"><div class="emergency-label">Ambulanza</div><div class="emergency-number">118</div></div>
+<div class="emergency-item"><div class="emergency-label">Centro Antiveleni</div><div class="emergency-number" style="font-size:18px">800-881688</div></div>
+</div>
+</div>
+
+<!-- Primo Soccorso -->
+<div id="primoSoccorsoList"></div>
+</div>
+
+<!-- PRENOTAZIONI TAB -->
+<div id="tab-prenotazioni" class="tab-content">
+<h2 class="card-title">📅 Prenotazioni</h2>
+<div class="grid-2" style="margin-bottom:12px">
+<select class="select" id="filterPrenLab" onchange="renderPrenotazioni()"><option value="tutti">Tutti i laboratori</option><option value="Chimica">Chimica</option><option value="Microbiologia">Microbiologia</option></select>
+<select class="select" id="filterPrenData" onchange="renderPrenotazioni()"><option value="oggi">Oggi</option><option value="settimana">Questa settimana</option><option value="passate">Passate</option><option value="tutte">Tutte</option></select>
+</div>
+<button class="btn btn-primary" onclick="openPrenotazioniForm()">➕ Nuova Prenotazione</button>
+<div id="prenotazioniList" style="margin-top:12px"></div>
+</div>
+
+<!-- TAVOLA TAB -->
+<div id="tab-tavola" class="tab-content">
+<h2 class="card-title">⚛️ Tavola Periodica</h2>
+<div class="search-box"><span class="search-icon">🔍</span><input class="input" id="searchTavola" placeholder="Cerca elemento (nome, simbolo, n°)..." oninput="renderTavola()"></div>
+<div id="tavolaContent"></div>
+</div>
+
+<!-- PDF TAB -->
+<div id="tab-pdf" class="tab-content">
+<h2 class="card-title">📄 Documenti & Cataloghi</h2>
+<p style="font-size:13px;color:#6b7280;margin-bottom:12px">Carica schede di sicurezza (SDS), cataloghi reagenti, manuali strumentazione e altro materiale PDF. I file vengono salvati localmente.</p>
+<input type="file" id="pdfInput" accept="application/pdf" multiple style="display:none" onchange="handlePdfUpload(event)">
+<button class="btn btn-primary" onclick="document.getElementById('pdfInput').click()">📤 Carica PDF</button>
+<div class="alert alert-info" style="margin-top:12px"><span style="font-size:18px">💡</span><div>Carica qui le SDS dei reagenti più utilizzati, lo Schemario Carlo Erba, manuali di pH-metri, spettrofotometri, autoclave e altre strumentazioni.</div></div>
+<div id="pdfList" style="margin-top:12px"></div>
+</div>
+
+<!-- COMPOSTI & ACRONIMI TAB -->
+<div id="tab-composti" class="tab-content">
+<h2 class="card-title">📖 Composti & Acronimi</h2>
+<p style="font-size:12px;color:#6b7280;margin-bottom:12px">Lista unica consultabile: acronimi/abbreviazioni (JOC) e composti chimici con formula. Fonte: periodni.com</p>
+<div class="search-box"><span class="search-icon">🔍</span><input class="input" id="searchComposti" placeholder="Cerca acronimo, nome o formula..." oninput="renderComposti()"></div>
+<div id="compostiCount" style="font-size:12px;color:#6b7280;margin-bottom:8px"></div>
+<div id="compostiList"></div>
+</div>
+
+<!-- RIFIUTI TAB -->
+<div id="tab-rifiuti" class="tab-content">
+<h2 class="card-title">🗑️ Rifiuti & Smaltimento</h2>
+<div class="alert alert-warning"><span style="font-size:18px">⚠️</span><div><strong>Regola d'oro:</strong> non mescolare mai categorie diverse di rifiuti. In caso di dubbio: consultare la SDS e avvisare il responsabile (RSPP).</div></div>
+<div id="rifiutiGuide"></div>
+<h3 style="font-size:14px;font-weight:700;margin:16px 0 8px">Registro Conferimenti</h3>
+<button class="btn btn-primary" onclick="openRifiutiForm()">➕ Registra Scarico Rifiuto</button>
+<div id="rifiutiList" style="margin-top:12px"></div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+<div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TAB BAR -->
+<nav class="tab-bar">
+<button class="tab-btn active" data-tab="home" onclick="switchTab('home')"><span class="icon">🏠</span><span>Home</span></button>
+<button class="tab-btn" data-tab="prenotazioni" onclick="switchTab('prenotazioni')"><span class="icon">📅</span><span>Prenotazioni</span></button>
+<button class="tab-btn" data-tab="magazzino" onclick="switchTab('magazzino')"><span class="icon">📊</span><span>Magazzino</span></button>
+<button class="tab-btn" data-tab="calcoli" onclick="switchTab('calcoli')"><span class="icon">⚗️</span><span>Calcoli</span></button>
+<button class="tab-btn" data-tab="strumenti" onclick="switchTab('strumenti')"><span class="icon">🧫</span><span>Strumenti</span></button>
+<button class="tab-btn" data-tab="sicurezza" onclick="switchTab('sicurezza')"><span class="icon">⚠️</span><span>Sicurezza</span></button>
+<button class="tab-btn" data-tab="rifiuti" onclick="switchTab('rifiuti')"><span class="icon">🗑️</span><span>Rifiuti</span></button>
+</nav>
+<script>
+// ============ STATE ============
+const state = {
+  magazzino: JSON.parse(localStorage.getItem('lab-magazzino') || '[]'),
+  strumenti: JSON.parse(localStorage.getItem('lab-strumenti') || 'null') || getDefaultStrumenti(),
+  prenotazioni: JSON.parse(localStorage.getItem('lab-prenotazioni') || '[]'),
+  pdfs: JSON.parse(localStorage.getItem('lab-pdf-files') || '[]'),
+  rifiuti: JSON.parse(localStorage.getItem('lab-rifiuti') || '[]'),
+  activeTab: localStorage.getItem('lab-active-tab') || 'home',
+  activeCalc: 'diluizione'
+};
+
+function save(key, data) {
+  localStorage.setItem('lab-' + key, JSON.stringify(data));
+}
+
+function getDefaultStrumenti() {
+  return [
+    {id:'1',nome:'Becher 250 mL',tipo:'vetreria',stato:'integro',posizione:'Armadio A - Ripiano 1',quantita:12,note:''},
+    {id:'2',nome:'Becher 100 mL',tipo:'vetreria',stato:'integro',posizione:'Armadio A - Ripiano 1',quantita:15,note:''},
+    {id:'3',nome:'Matraccio 100 mL',tipo:'vetreria',stato:'integro',posizione:'Armadio A - Ripiano 2',quantita:8,note:'Classe A'},
+    {id:'4',nome:'Buretta 50 mL',tipo:'vetreria',stato:'da-calibrare',posizione:'Armadio B - Ripiano 1',quantita:4,note:'Verificare taratura'},
+    {id:'5',nome:'pH-metro',tipo:'apparecchiatura',stato:'integro',posizione:'Banco strumentazione',quantita:2,note:'Elettrodo combinato'},
+    {id:'6',nome:'Spettrofotometro UV-Vis',tipo:'apparecchiatura',stato:'integro',posizione:'Banco strumentazione',quantita:1,note:'Lambda 25'},
+    {id:'7',nome:'Autoclave',tipo:'apparecchiatura',stato:'integro',posizione:'Locale sterilizzazione',quantita:1,note:'121°C - 15 min'},
+    {id:'8',nome:'Termociclatore (PCR)',tipo:'apparecchiatura',stato:'integro',posizione:'Lab. Biologia Molecolare',quantita:1,note:'Bio-Rad T100'},
+    {id:'9',nome:'Cappa aspirante',tipo:'apparecchiatura',stato:'integro',posizione:'Lab. Chimica',quantita:2,note:''},
+    {id:'10',nome:'Piastre Petri 90mm',tipo:'accessorio',stato:'integro',posizione:'Armadio C',quantita:200,note:'Sterili, monouso'}
+  ];
+}
+
+// ============ NAVIGATION ============
+function switchTab(tab) {
+  state.activeTab = tab;
+  localStorage.setItem('lab-active-tab', tab);
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector('.tab-btn[data-tab="' + tab + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+  if (tab === 'home') updateHome();
+  if (tab === 'calcoli') renderCalc();
+  if (tab === 'magazzino') renderMagazzino();
+  if (tab === 'strumenti') renderStrumenti();
+  if (tab === 'prenotazioni') renderPrenotazioni();
+  if (tab === 'tavola') renderTavola();
+  if (tab === 'pdf') renderPdfs();
+  if (tab === 'composti') renderComposti();
+  if (tab === 'rifiuti') { renderRifiutiGuide(); renderRifiuti(); }
+}
+
+// ============ HOME ============
+function updateHome() {
+  const h = new Date().getHours();
+  const greeting = h < 12 ? 'Buongiorno' : h < 18 ? 'Buon pomeriggio' : 'Buonasera';
+  document.getElementById('greeting').textContent = greeting + ' 👋';
+  const today = new Date().toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('todayDate').textContent = today;
+  document.getElementById('headerDate').textContent = new Date().toLocaleDateString('it-IT', {weekday:'short', day:'numeric', month:'short'});
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayActs = state.prenotazioni.filter(p => p.data === todayStr).length;
+  document.getElementById('todayActivities').textContent = todayActs;
+  document.getElementById('badgePrenotazioni').textContent = todayActs;
+  document.getElementById('badgeMagazzino').textContent = state.magazzino.length;
+
+  const ok = state.strumenti.filter(s => s.stato === 'integro').length;
+  const warn = state.strumenti.filter(s => s.stato !== 'integro').length;
+  document.getElementById('statOk').textContent = ok;
+  document.getElementById('statWarn').textContent = warn;
+}
+
+// ============ MAGAZZINO ============
+const catColors = {acido:'badge-red',base:'badge-blue',solvente:'badge-yellow',indicatore:'badge-purple',sale:'badge-green',altro:'badge-gray'};
+const ghsMap = {acido:'ghs05',base:'ghs05',solvente:'ghs02',indicatore:'ghs07',sale:'ghs07',altro:'ghs07'};
+
+function renderMagazzino() {
+  const search = document.getElementById('searchMagazzino').value.toLowerCase();
+  const filter = document.getElementById('filterMagazzino').value;
+  const filtered = state.magazzino.filter(r => {
+    const match = r.nome.toLowerCase().includes(search) || r.formula.toLowerCase().includes(search) || r.posizione.toLowerCase().includes(search);
+    const matchCat = filter === 'tutte' || r.categoria === filter;
+    return match && matchCat;
+  });
+  const list = document.getElementById('magazzinoList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-title">Nessun reagente trovato</div><div class="empty-state-sub">Aggiungi il primo reagente al magazzino</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(r => `
+    <div class="list-item">
+      <div style="flex-shrink:0">${ghsSvg(ghsMap[r.categoria], 40)}</div>
+      <div class="list-item-content">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <div class="list-item-title">${escapeHtml(r.nome)}</div>
+          ${r.formula ? `<span style="font-size:12px;color:#6b7280;font-style:italic">${escapeHtml(r.formula)}</span>` : ''}
+          <span class="badge ${catColors[r.categoria]}">${r.categoria}</span>
+        </div>
+        <div class="list-item-sub">
+          ${r.posizione ? '📍 ' + escapeHtml(r.posizione) : ''}
+          ${r.quantita ? ' • 📦 ' + escapeHtml(r.quantita) + ' ' + escapeHtml(r.unita) : ''}
+        </div>
+        ${r.note ? `<div style="font-size:11px;color:#9ca3af;margin-top:4px">${escapeHtml(r.note)}</div>` : ''}
+      </div>
+      <div class="list-item-actions">
+        <button class="icon-btn primary" onclick="editMagazzino('${r.id}')">✏️</button>
+        <button class="icon-btn danger" onclick="deleteMagazzino('${r.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openMagazzinoForm(id) {
+  const r = id ? state.magazzino.find(x => x.id === id) : {nome:'',formula:'',categoria:'altro',posizione:'',quantita:'',unita:'mL',note:''};
+  showModal(`
+    <div class="modal-title"><span>${id ? 'Modifica' : 'Nuovo'} Reagente</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label class="form-label">Nome *</label><input class="input" id="fNome" value="${escapeHtml(r.nome)}" placeholder="Es. Acido solforico"></div>
+    <div class="form-group"><label class="form-label">Formula chimica</label><input class="input" id="fFormula" value="${escapeHtml(r.formula)}" placeholder="Es. H₂SO₄"></div>
+    <div class="form-group"><label class="form-label">Categoria</label><select class="select" id="fCategoria">
+      ${['acido','base','solvente','indicatore','sale','altro'].map(c => `<option value="${c}" ${r.categoria===c?'selected':''}>${c}</option>`).join('')}
+    </select></div>
+    <div class="form-group"><label class="form-label">Posizione</label><input class="input" id="fPosizione" value="${escapeHtml(r.posizione)}" placeholder="Es. Armadio A, Ripiano 2"></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Quantità</label><input class="input" type="number" id="fQuantita" value="${escapeHtml(r.quantita)}"></div>
+      <div class="form-group"><label class="form-label">Unità</label><select class="select" id="fUnita">
+        ${['mL','L','g','kg','pz'].map(u => `<option value="${u}" ${r.unita===u?'selected':''}>${u}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="input" id="fNote" value="${escapeHtml(r.note)}"></div>
+    <div class="grid-2" style="margin-top:16px">
+      <button class="btn btn-success" onclick="saveMagazzino('${id||''}')">💾 Salva</button>
+      <button class="btn btn-secondary" onclick="closeModal()">✕ Annulla</button>
+    </div>
+  `);
+}
+
+function saveMagazzino(id) {
+  const data = {
+    nome: document.getElementById('fNome').value.trim(),
+    formula: document.getElementById('fFormula').value.trim(),
+    categoria: document.getElementById('fCategoria').value,
+    posizione: document.getElementById('fPosizione').value.trim(),
+    quantita: document.getElementById('fQuantita').value,
+    unita: document.getElementById('fUnita').value,
+    note: document.getElementById('fNote').value.trim()
+  };
+  if (!data.nome) { alert('Inserisci il nome'); return; }
+  if (id) {
+    state.magazzino = state.magazzino.map(r => r.id === id ? {...r, ...data} : r);
+  } else {
+    state.magazzino.push({id: Date.now().toString(), ...data});
+  }
+  save('magazzino', state.magazzino);
+  closeModal();
+  renderMagazzino();
+}
+
+function editMagazzino(id) { openMagazzinoForm(id); }
+function deleteMagazzino(id) {
+  if (!confirm('Eliminare questo reagente?')) return;
+  state.magazzino = state.magazzino.filter(r => r.id !== id);
+  save('magazzino', state.magazzino);
+  renderMagazzino();
+}
+
+// ============ STRUMENTI ============
+const statoConfig = {
+  'integro': {color:'badge-green',icon:'✓',label:'Integro/OK'},
+  'da-calibrare': {color:'badge-yellow',icon:'🔧',label:'Da calibrare'},
+  'da-pulire': {color:'badge-blue',icon:'⚠',label:'Da pulire'},
+  'danneggiato': {color:'badge-red',icon:'✕',label:'Danneggiato'}
+};
+
+function renderStrumenti() {
+  const search = document.getElementById('searchStrumenti').value.toLowerCase();
+  const filterTipo = document.getElementById('filterStrumentiTipo').value;
+  const filterStato = document.getElementById('filterStrumentiStato').value;
+  const filtered = state.strumenti.filter(s => {
+    const match = s.nome.toLowerCase().includes(search) || s.posizione.toLowerCase().includes(search);
+    return match && (filterTipo === 'tutti' || s.tipo === filterTipo) && (filterStato === 'tutti' || s.stato === filterStato);
+  });
+
+  document.getElementById('statTot').textContent = state.strumenti.length;
+  document.getElementById('statIntegri').textContent = state.strumenti.filter(s => s.stato === 'integro').length;
+  document.getElementById('statCalibrare').textContent = state.strumenti.filter(s => s.stato === 'da-calibrare').length;
+  document.getElementById('statDann').textContent = state.strumenti.filter(s => s.stato === 'danneggiato').length;
+
+  const list = document.getElementById('strumentiList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🧫</div><div class="empty-state-title">Nessuno strumento trovato</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(s => {
+    const cfg = statoConfig[s.stato];
+    return `
+    <div class="list-item">
+      <div class="list-item-content">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <div class="list-item-title">${escapeHtml(s.nome)}</div>
+          <span class="badge ${cfg.color}">${cfg.icon} ${cfg.label}</span>
+        </div>
+        <div class="list-item-sub">
+          <span class="badge badge-gray" style="margin-right:4px">${s.tipo}</span>
+          ${s.posizione ? '📍 ' + escapeHtml(s.posizione) : ''}
+          ${s.quantita > 1 ? ' • ×' + s.quantita : ''}
+        </div>
+        ${s.note ? `<div style="font-size:11px;color:#9ca3af;margin-top:4px">${escapeHtml(s.note)}</div>` : ''}
+      </div>
+      <div class="list-item-actions">
+        <button class="icon-btn primary" onclick="editStrumento('${s.id}')">✏️</button>
+        <button class="icon-btn danger" onclick="deleteStrumento('${s.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openStrumentiForm(id) {
+  const s = id ? state.strumenti.find(x => x.id === id) : {nome:'',tipo:'vetreria',stato:'integro',posizione:'',quantita:1,note:''};
+  showModal(`
+    <div class="modal-title"><span>${id ? 'Modifica' : 'Nuovo'} Strumento</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label class="form-label">Nome *</label><input class="input" id="sNome" value="${escapeHtml(s.nome)}"></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Tipo</label><select class="select" id="sTipo">
+        ${['vetreria','apparecchiatura','accessorio'].map(t => `<option value="${t}" ${s.tipo===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-group"><label class="form-label">Stato</label><select class="select" id="sStato">
+        <option value="integro" ${s.stato==='integro'?'selected':''}>Integro/OK</option>
+        <option value="da-calibrare" ${s.stato==='da-calibrare'?'selected':''}>Da calibrare</option>
+        <option value="da-pulire" ${s.stato==='da-pulire'?'selected':''}>Da pulire</option>
+        <option value="danneggiato" ${s.stato==='danneggiato'?'selected':''}>Danneggiato</option>
+      </select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Posizione</label><input class="input" id="sPosizione" value="${escapeHtml(s.posizione)}"></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Quantità</label><input class="input" type="number" id="sQuantita" value="${s.quantita}"></div>
+      <div class="form-group"><label class="form-label">Note</label><input class="input" id="sNote" value="${escapeHtml(s.note)}"></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <button class="btn btn-success" onclick="saveStrumento('${id||''}')">💾 Salva</button>
+      <button class="btn btn-secondary" onclick="closeModal()">✕ Annulla</button>
+    </div>
+  `);
+}
+
+function saveStrumento(id) {
+  const data = {
+    nome: document.getElementById('sNome').value.trim(),
+    tipo: document.getElementById('sTipo').value,
+    stato: document.getElementById('sStato').value,
+    posizione: document.getElementById('sPosizione').value.trim(),
+    quantita: parseInt(document.getElementById('sQuantita').value) || 1,
+    note: document.getElementById('sNote').value.trim()
+  };
+  if (!data.nome) { alert('Inserisci il nome'); return; }
+  if (id) {
+    state.strumenti = state.strumenti.map(s => s.id === id ? {...s, ...data} : s);
+  } else {
+    state.strumenti.push({id: Date.now().toString(), ...data});
+  }
+  save('strumenti', state.strumenti);
+  closeModal();
+  renderStrumenti();
+}
+
+function editStrumento(id) { openStrumentiForm(id); }
+function deleteStrumento(id) {
+  if (!confirm('Eliminare questo strumento?')) return;
+  state.strumenti = state.strumenti.filter(s => s.id !== id);
+  save('strumenti', state.strumenti);
+  renderStrumenti();
+}
+
+// ============ PRENOTAZIONI ============
+function renderPrenotazioni() {
+  const filterLab = document.getElementById('filterPrenLab').value;
+  const filterData = document.getElementById('filterPrenData').value;
+  const today = new Date().toISOString().split('T')[0];
+
+  const filtered = state.prenotazioni.filter(p => {
+    const matchLab = filterLab === 'tutti' || p.laboratorio === filterLab;
+    let matchData = true;
+    if (filterData === 'oggi') matchData = p.data === today;
+    else if (filterData === 'settimana') {
+      const d = new Date(p.data), now = new Date(), week = new Date(now.getTime() + 7*24*60*60*1000);
+      matchData = d >= now && d <= week;
+    } else if (filterData === 'passate') matchData = p.data < today;
+    return matchLab && matchData;
+  }).sort((a,b) => (a.data + a.ora).localeCompare(b.data + b.ora));
+
+  const list = document.getElementById('prenotazioniList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-title">Nessuna prenotazione trovata</div><div class="empty-state-sub">Registra la prima attività</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(p => `
+    <div class="prenotazione ${p.completata ? 'completed' : ''}">
+      <div class="prenotazione-header">
+        <span class="badge ${p.laboratorio === 'Chimica' ? 'badge-blue' : 'badge-purple'}">${p.laboratorio}</span>
+        <strong style="font-size:14px">${escapeHtml(p.classe)}</strong>
+        <span style="font-size:12px;color:#6b7280">• ${escapeHtml(p.docente)}</span>
+      </div>
+      <div class="prenotazione-meta">
+        <span>📅 ${formatDate(p.data)}</span>
+        ${p.ora ? `<span>🕐 ${p.ora}</span>` : ''}
+        ${p.materia ? `<span>📚 ${escapeHtml(p.materia)}</span>` : ''}
+      </div>
+      ${p.attivita ? `<div class="prenotazione-details"><strong>Attività:</strong> ${escapeHtml(p.attivita)}</div>` : ''}
+      <div class="prenotazione-details" style="margin-top:4px">
+        ${p.reagenti ? `<div>⚗️ <strong>Reagenti:</strong> ${escapeHtml(p.reagenti)}</div>` : ''}
+        ${p.vetreria ? `<div>🧪 <strong>Vetreria:</strong> ${escapeHtml(p.vetreria)}</div>` : ''}
+        ${p.strumentazione ? `<div>🔬 <strong>Strumentazione:</strong> ${escapeHtml(p.strumentazione)}</div>` : ''}
+        ${p.note ? `<div style="font-style:italic;color:#6b7280">📝 ${escapeHtml(p.note)}</div>` : ''}
+      </div>
+      <div style="display:flex;gap:4px;margin-top:8px;justify-content:flex-end">
+        <button class="icon-btn ${p.completata ? 'primary' : ''}" onclick="togglePrenotazione('${p.id}')">${p.completata ? '✓' : '○'}</button>
+        <button class="icon-btn primary" onclick="editPrenotazione('${p.id}')">✏️</button>
+        <button class="icon-btn danger" onclick="deletePrenotazione('${p.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPrenotazioniForm(id) {
+  const today = new Date().toISOString().split('T')[0];
+  const p = id ? state.prenotazioni.find(x => x.id === id) : {data:today,ora:'08:00',docente:'',classe:'',laboratorio:'Chimica',materia:'',attivita:'',reagenti:'',vetreria:'',strumentazione:'',note:'',completata:false};
+  showModal(`
+    <div class="modal-title"><span>${id ? 'Modifica' : 'Nuova'} Prenotazione</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Data *</label><input class="input" type="date" id="pData" value="${p.data}"></div>
+      <div class="form-group"><label class="form-label">Ora</label><input class="input" type="time" id="pOra" value="${p.ora}"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Docente *</label><input class="input" id="pDocente" value="${escapeHtml(p.docente)}"></div>
+      <div class="form-group"><label class="form-label">Classe *</label><input class="input" id="pClasse" value="${escapeHtml(p.classe)}" placeholder="Es. 4A Chimica"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Laboratorio</label><select class="select" id="pLab">
+        <option value="Chimica" ${p.laboratorio==='Chimica'?'selected':''}>Chimica</option>
+        <option value="Microbiologia" ${p.laboratorio==='Microbiologia'?'selected':''}>Microbiologia</option>
+      </select></div>
+      <div class="form-group"><label class="form-label">Materia</label><input class="input" id="pMateria" value="${escapeHtml(p.materia)}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Attività / Esercitazione</label><textarea class="textarea" id="pAttivita">${escapeHtml(p.attivita)}</textarea></div>
+    <div class="form-group"><label class="form-label">Reagenti necessari</label><textarea class="textarea" id="pReagenti">${escapeHtml(p.reagenti)}</textarea></div>
+    <div class="form-group"><label class="form-label">Vetreria necessaria</label><textarea class="textarea" id="pVetreria">${escapeHtml(p.vetreria)}</textarea></div>
+    <div class="form-group"><label class="form-label">Strumentazione</label><textarea class="textarea" id="pStrumentazione">${escapeHtml(p.strumentazione)}</textarea></div>
+    <div class="form-group"><label class="form-label">Note</label><textarea class="textarea" id="pNote">${escapeHtml(p.note)}</textarea></div>
+    <div class="grid-2" style="margin-top:16px">
+      <button class="btn btn-success" onclick="savePrenotazione('${id||''}')">💾 Salva</button>
+      <button class="btn btn-secondary" onclick="closeModal()">✕ Annulla</button>
+    </div>
+  `);
+}
+
+function savePrenotazione(id) {
+  const data = {
+    data: document.getElementById('pData').value,
+    ora: document.getElementById('pOra').value,
+    docente: document.getElementById('pDocente').value.trim(),
+    classe: document.getElementById('pClasse').value.trim(),
+    laboratorio: document.getElementById('pLab').value,
+    materia: document.getElementById('pMateria').value.trim(),
+    attivita: document.getElementById('pAttivita').value.trim(),
+    reagenti: document.getElementById('pReagenti').value.trim(),
+    vetreria: document.getElementById('pVetreria').value.trim(),
+    strumentazione: document.getElementById('pStrumentazione').value.trim(),
+    note: document.getElementById('pNote').value.trim()
+  };
+  if (!data.data || !data.docente || !data.classe) { alert('Compila i campi obbligatori'); return; }
+  if (id) {
+    state.prenotazioni = state.prenotazioni.map(p => p.id === id ? {...p, ...data} : p);
+  } else {
+    state.prenotazioni.push({id: Date.now().toString(), ...data, completata: false});
+  }
+  save('prenotazioni', state.prenotazioni);
+  closeModal();
+  renderPrenotazioni();
+}
+
+function editPrenotazione(id) { openPrenotazioniForm(id); }
+function deletePrenotazione(id) {
+  if (!confirm('Eliminare questa prenotazione?')) return;
+  state.prenotazioni = state.prenotazioni.filter(p => p.id !== id);
+  save('prenotazioni', state.prenotazioni);
+  renderPrenotazioni();
+}
+function togglePrenotazione(id) {
+  state.prenotazioni = state.prenotazioni.map(p => p.id === id ? {...p, completata: !p.completata} : p);
+  save('prenotazioni', state.prenotazioni);
+  renderPrenotazioni();
+}
+
+// ============ CALCOLI ============
+function switchCalc(btn) {
+  document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.activeCalc = btn.dataset.calc;
+  renderCalc();
+}
+
+function renderCalc() {
+  const c = document.getElementById('calcContent');
+  const calcs = {
+    diluizione: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">C₁V₁ = C₂V₂</h3>
+        <p style="font-size:12px;color:#6b7280;margin-bottom:12px">Inserisci 3 valori e seleziona l'incognita</p>
+        <div class="form-group"><label class="form-label">C₁ (conc. iniz.)</label><input class="input" type="number" step="any" id="dc1" placeholder="M, mol/L, %" oninput="calcDiluizione()"></div>
+        <div class="form-group"><label class="form-label">V₁ (vol. iniz.)</label><input class="input" type="number" step="any" id="dv1" placeholder="mL, L" oninput="calcDiluizione()"></div>
+        <div class="form-group"><label class="form-label">C₂ (conc. fin.)</label><input class="input" type="number" step="any" id="dc2" placeholder="M, mol/L, %" oninput="calcDiluizione()"></div>
+        <div class="form-group"><label class="form-label">V₂ (vol. fin.)</label><input class="input" type="number" step="any" id="dv2" placeholder="mL, L" oninput="calcDiluizione()"></div>
+        <div class="form-group"><label class="form-label">Incognita</label><select class="select" id="dInc" onchange="calcDiluizione()">
+          <option value="v1">V₁ (volume da prelevare)</option><option value="c1">C₁ (concentrazione iniziale)</option><option value="v2">V₂ (volume finale)</option><option value="c2">C₂ (concentrazione finale)</option>
+        </select></div>
+        <div id="dResult"></div>
+        <div class="alert alert-info" style="margin-top:12px"><span style="font-size:16px">⚠️</span><div><strong>Regola fondamentale:</strong> Nella diluizione di acidi concentrati, versare SEMPRE l'acido nell'acqua, mai il contrario.</div></div>
+      </div>`,
+    solido: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Preparazione da solido</h3>
+        <p style="font-size:12px;color:#6b7280;margin-bottom:12px">m = M × MM × V</p>
+        <div class="form-group"><label class="form-label">Molarità (M) - mol/L</label><input class="input" type="number" step="any" id="sm" placeholder="Es. 0.1" oninput="calcSolido()"></div>
+        <div class="form-group"><label class="form-label">Massa molare (MM) - g/mol</label><input class="input" type="number" step="any" id="smm" placeholder="Es. 58.44" oninput="calcSolido()"></div>
+        <div class="form-group"><label class="form-label">Volume desiderato - mL</label><input class="input" type="number" step="any" id="sv" placeholder="Es. 1000" oninput="calcSolido()"></div>
+        <div id="sResult"></div>
+      </div>`,
+    percentuale: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Soluzioni percentuali</h3>
+        <div class="grid-2" style="margin-bottom:12px">
+          <button class="btn btn-primary" id="pctMm" onclick="setPctType('mm')" style="background:#2563eb">% m/m</button>
+          <button class="btn btn-secondary" id="pctMv" onclick="setPctType('mv')">% v/v</button>
+        </div>
+        <div class="form-group"><label class="form-label">Percentuale (%)</label><input class="input" type="number" step="any" id="pctP" placeholder="Es. 10" oninput="calcPercentuale()"></div>
+        <div class="form-group"><label class="form-label" id="pctLabel">Quantità totale (g)</label><input class="input" type="number" step="any" id="pctQ" placeholder="Es. 500" oninput="calcPercentuale()"></div>
+        <div id="pctResult"></div>
+      </div>`,
+    ph: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">💧 Calcolatore pH</h3>
+        <div class="grid-2" style="margin-bottom:12px">
+          <button class="btn btn-primary ph-type" data-t="acido-forte" onclick="setPhType('acido-forte')" style="background:#dc2626">Acido Forte</button>
+          <button class="btn btn-secondary ph-type" data-t="base-forte" onclick="setPhType('base-forte')">Base Forte</button>
+          <button class="btn btn-secondary ph-type" data-t="acido-debole" onclick="setPhType('acido-debole')">Acido Debole</button>
+          <button class="btn btn-secondary ph-type" data-t="base-debole" onclick="setPhType('base-debole')">Base Debole</button>
+        </div>
+        <div class="form-group"><label class="form-label" id="phConcLabel">Concentrazione (mol/L)</label><input class="input" type="number" step="any" id="phC" placeholder="Es. 0.1" oninput="calcPh()"></div>
+        <div class="form-group" id="phKaGroup" style="display:none"><label class="form-label">Ka (costante dissociazione)</label><input class="input" type="number" step="any" id="phKa" placeholder="Es. 1.8e-5" oninput="calcPh()"></div>
+        <div id="phResult"></div>
+        <div class="ph-scale"><div style="background:#ef4444"></div><div style="background:#f97316"></div><div style="background:#eab308"></div><div style="background:#22c55e"></div><div style="background:#3b82f6"></div><div style="background:#6366f1"></div><div style="background:#a855f7"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-top:4px"><span>0</span><span>7</span><span>14</span></div>
+      </div>`,
+    gel: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">🧬 Gel di Agarosio</h3>
+        <p style="font-size:12px;color:#6b7280;margin-bottom:12px">Preparazione gel per elettroforesi DNA (% w/v)</p>
+        <div class="form-group"><label class="form-label">% agarosio</label><input class="input" type="number" step="0.1" id="gelP" value="1" oninput="calcGel()"></div>
+        <div class="form-group"><label class="form-label">Volume tampone (mL)</label><input class="input" type="number" step="any" id="gelV" value="100" oninput="calcGel()"></div>
+        <div id="gelResult"></div>
+        <div class="alert alert-info" style="margin-top:12px;background:#f3e8ff;border-color:#c4b5fd;color:#6b21a8"><strong>Guida rapida % gel:</strong><br>0.7% → DNA &gt; 10 kb | 1% → 5-10 kb | 1.5% → 1-5 kb | 2% → 0.5-1 kb | 3% → &lt; 500 bp</div>
+      </div>`,
+    terreni: `
+      <div class="card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">🧫 Terreni di Coltura</h3>
+        <p style="font-size:12px;color:#6b7280;margin-bottom:12px">Preparazione terreni disidratati (g/L)</p>
+        <div class="form-group"><label class="form-label">Concentrazione (g/L)</label><input class="input" type="number" step="any" id="tC" placeholder="Es. 25" oninput="calcTerreni()"></div>
+        <div class="form-group"><label class="form-label">Volume desiderato (mL)</label><input class="input" type="number" step="any" id="tV" placeholder="Es. 1000" oninput="calcTerreni()"></div>
+        <div id="tResult"></div>
+        <div class="alert alert-info" style="margin-top:12px;background:#f0fdfa;border-color:#99f6e4;color:#134e4a"><strong>Terreni comuni:</strong><br>• LB Broth: 25 g/L | • Nutrient Agar: 28 g/L<br>• PCA: 35 g/L | • PDA: 39 g/L<br>• MSA: 111 g/L | • MacConkey: 50 g/L</div>
+      </div>`
+  };
+  calcs.mm = `
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">⚖️ Massa Molare (MM)</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:12px">Digita la formula: supporta parentesi e idrati (es. Ca(OH)2, CuSO4·5H2O)</p>
+      <div class="form-group"><label class="form-label">Formula chimica</label><input class="input" id="mmFormula" placeholder="Es. H2SO4" oninput="calcMM()"></div>
+      <div id="mmResult"></div>
+    </div>`;
+  c.innerHTML = calcs[state.activeCalc];
+  if (state.activeCalc === 'ph') {
+    window.phType = 'acido-forte';
+    document.querySelector('.ph-type[data-t="acido-forte"]').classList.add('btn-primary');
+    document.querySelector('.ph-type[data-t="acido-forte"]').style.background = '#dc2626';
+  }
+  if (state.activeCalc === 'percentuale') window.pctType = 'mm';
+}
+
+function calcDiluizione() {
+  const c1 = parseFloat(document.getElementById('dc1').value);
+  const v1 = parseFloat(document.getElementById('dv1').value);
+  const c2 = parseFloat(document.getElementById('dc2').value);
+  const v2 = parseFloat(document.getElementById('dv2').value);
+  const inc = document.getElementById('dInc').value;
+  const vals = [c1,v1,c2,v2].filter(v => !isNaN(v));
+  if (vals.length < 3) { document.getElementById('dResult').innerHTML = ''; return; }
+  let r;
+  if (inc === 'v1') r = (c2*v2)/c1;
+  else if (inc === 'c1') r = (c2*v2)/v1;
+  else if (inc === 'v2') r = (c1*v1)/c2;
+  else r = (c1*v1)/v2;
+  if (!isNaN(r) && isFinite(r)) {
+    document.getElementById('dResult').innerHTML = `<div class="result"><strong>Risultato: ${inc.toUpperCase()} = ${r.toFixed(4)}</strong></div>`;
+  }
+}
+
+function calcSolido() {
+  const m = parseFloat(document.getElementById('sm').value);
+  const mm = parseFloat(document.getElementById('smm').value);
+  const v = parseFloat(document.getElementById('sv').value);
+  if (!isNaN(m) && !isNaN(mm) && !isNaN(v)) {
+    const massa = m * mm * (v/1000);
+    document.getElementById('sResult').innerHTML = `<div class="result"><strong>Massa da pesare: ${massa.toFixed(4)} g</strong><br><span style="font-size:12px">Sciogliere in un volume minore di solvente, poi portare a volume nel matraccio tarato.</span></div>`;
+  } else {
+    document.getElementById('sResult').innerHTML = '';
+  }
+}
+
+function setPctType(t) {
+  window.pctType = t;
+  document.getElementById('pctMm').className = t === 'mm' ? 'btn btn-primary' : 'btn btn-secondary';
+  document.getElementById('pctMv').className = t === 'mv' ? 'btn btn-primary' : 'btn btn-secondary';
+  document.getElementById('pctLabel').textContent = t === 'mm' ? 'Quantità totale (g)' : 'Quantità totale (mL)';
+  calcPercentuale();
+}
+
+function calcPercentuale() {
+  const p = parseFloat(document.getElementById('pctP').value);
+  const q = parseFloat(document.getElementById('pctQ').value);
+  if (!isNaN(p) && !isNaN(q)) {
+    const r = (p*q)/100;
+    const u = window.pctType === 'mm' ? 'g' : 'mL';
+    document.getElementById('pctResult').innerHTML = `<div class="result"><strong>${window.pctType === 'mm' ? 'Massa' : 'Volume'} soluto: ${r.toFixed(4)} ${u}</strong></div>`;
+  } else {
+    document.getElementById('pctResult').innerHTML = '';
+  }
+}
+
+function setPhType(t) {
+  window.phType = t;
+  document.querySelectorAll('.ph-type').forEach(b => {
+    b.className = 'btn ph-type ' + (b.dataset.t === t ? 'btn-primary' : 'btn-secondary');
+    if (b.dataset.t === t && (t === 'acido-forte' || t === 'acido-debole')) b.style.background = '#dc2626';
+    else if (b.dataset.t === t) b.style.background = '#2563eb';
+    else b.style.background = '';
+  });
+  document.getElementById('phKaGroup').style.display = (t === 'acido-debole' || t === 'base-debole') ? 'block' : 'none';
+  calcPh();
+}
+
+function calcPh() {
+  const c = parseFloat(document.getElementById('phC').value);
+  if (isNaN(c) || c <= 0) { document.getElementById('phResult').innerHTML = ''; return; }
+  let ph, spiegazione;
+  const t = window.phType;
+  if (t === 'acido-forte') {
+    ph = -Math.log10(c);
+    spiegazione = `pH = -log[${c}] = ${ph.toFixed(3)}`;
+  } else if (t === 'base-forte') {
+    const poh = -Math.log10(c);
+    ph = 14 - poh;
+    spiegazione = `pOH = -log[${c}] = ${poh.toFixed(3)}<br>pH = 14 - ${poh.toFixed(3)} = ${ph.toFixed(3)}`;
+  } else {
+    const ka = parseFloat(document.getElementById('phKa').value);
+    if (isNaN(ka) || ka <= 0) { document.getElementById('phResult').innerHTML = ''; return; }
+    if (t === 'acido-debole') {
+      const h = Math.sqrt(ka*c);
+      ph = -Math.log10(h);
+      spiegazione = `[H⁺] = √(Ka × C) = ${h.toExponential(3)}<br>pH = -log(${h.toExponential(3)}) = ${ph.toFixed(3)}`;
+    } else {
+      const kb = 1e-14/ka;
+      const oh = Math.sqrt(kb*c);
+      const poh = -Math.log10(oh);
+      ph = 14 - poh;
+      spiegazione = `Kb = Kw/Ka = ${kb.toExponential(3)}<br>[OH⁻] = ${oh.toExponential(3)}<br>pOH = ${poh.toFixed(3)}<br>pH = ${ph.toFixed(3)}`;
+    }
+  }
+  let color, label;
+  if (ph < 3) { color = '#fee2e2'; label = 'Fortemente acido'; }
+  else if (ph < 6) { color = '#fed7aa'; label = 'Debolmente acido'; }
+  else if (ph < 7) { color = '#fef3c7'; label = 'Leggermente acido'; }
+  else if (ph === 7) { color = '#dcfce7'; label = 'Neutro'; }
+  else if (ph < 8) { color = '#d9f99d'; label = 'Leggermente basico'; }
+  else if (ph < 11) { color = '#bfdbfe'; label = 'Debolmente basico'; }
+  else { color = '#e9d5ff'; label = 'Fortemente basico'; }
+  document.getElementById('phResult').innerHTML = `<div class="ph-result" style="background:${color}"><div style="font-size:36px;font-weight:700">${ph.toFixed(2)}</div><div style="font-size:13px;font-weight:500">${label}</div><div style="font-size:11px;margin-top:8px;font-family:monospace;text-align:left;white-space:pre-line">${spiegazione}</div></div>`;
+}
+
+function calcGel() {
+  const p = parseFloat(document.getElementById('gelP').value);
+  const v = parseFloat(document.getElementById('gelV').value);
+  if (!isNaN(p) && !isNaN(v)) {
+    const m = (p*v)/100;
+    document.getElementById('gelResult').innerHTML = `<div class="result"><strong>Agarosio da pesare: ${m.toFixed(3)} g</strong><div style="font-size:12px;margin-top:8px"><strong>Procedura:</strong><br>1. Pesare ${m.toFixed(2)} g di agarosio<br>2. Sospendere in ${v} mL di tampone TAE o TBE<br>3. Scaldare in microonde fino a ebollizione<br>4. Raffreddare a ~60°C, aggiungere colorante<br>5. Colare nel gel casting con pettine<br>6. Lasciare polimerizzare 20-30 min</div></div>`;
+  }
+}
+
+function calcTerreni() {
+  const c = parseFloat(document.getElementById('tC').value);
+  const v = parseFloat(document.getElementById('tV').value);
+  if (!isNaN(c) && !isNaN(v)) {     const m = c * (v/1000);
+    document.getElementById('tResult').innerHTML = `<div class="result"><strong>Polvere da pesare: ${m.toFixed(2)} g</strong><div style="font-size:12px;margin-top:8px"><strong>Procedura:</strong><br>1. Pesare ${m.toFixed(2)} g di terreno disidratato<br>2. Sospendere in ${v} mL di acqua distillata<br>3. Sciogliere completamente<br>4. Sterilizzare in autoclave a 121°C per 15 min<br>5. Raffreddare a ~50°C prima di colare</div></div>`;
+  }
+}
+
+// ============ TAVOLA PERIODICA ============
+const elements = [
+  {n:1,s:'H',name:'Idrogeno',m:1.008,cat:'nonmetal',g:1,p:1},{n:2,s:'He',name:'Elio',m:4.003,cat:'noble',g:18,p:1},
+  {n:3,s:'Li',name:'Litio',m:6.941,cat:'alkali',g:1,p:2},{n:4,s:'Be',name:'Berillio',m:9.012,cat:'alkaline',g:2,p:2},
+  {n:5,s:'B',name:'Boro',m:10.81,cat:'metalloid',g:13,p:2},{n:6,s:'C',name:'Carbonio',m:12.01,cat:'nonmetal',g:14,p:2},
+  {n:7,s:'N',name:'Azoto',m:14.01,cat:'nonmetal',g:15,p:2},{n:8,s:'O',name:'Ossigeno',m:16.00,cat:'nonmetal',g:16,p:2},
+  {n:9,s:'F',name:'Fluoro',m:19.00,cat:'halogen',g:17,p:2},{n:10,s:'Ne',name:'Neon',m:20.18,cat:'noble',g:18,p:2},
+  {n:11,s:'Na',name:'Sodio',m:22.99,cat:'alkali',g:1,p:3},{n:12,s:'Mg',name:'Magnesio',m:24.31,cat:'alkaline',g:2,p:3},
+  {n:13,s:'Al',name:'Alluminio',m:26.98,cat:'post',g:13,p:3},{n:14,s:'Si',name:'Silicio',m:28.09,cat:'metalloid',g:14,p:3},
+  {n:15,s:'P',name:'Fosforo',m:30.97,cat:'nonmetal',g:15,p:3},{n:16,s:'S',name:'Zolfo',m:32.07,cat:'nonmetal',g:16,p:3},
+  {n:17,s:'Cl',name:'Cloro',m:35.45,cat:'halogen',g:17,p:3},{n:18,s:'Ar',name:'Argon',m:39.95,cat:'noble',g:18,p:3},
+  {n:19,s:'K',name:'Potassio',m:39.10,cat:'alkali',g:1,p:4},{n:20,s:'Ca',name:'Calcio',m:40.08,cat:'alkaline',g:2,p:4},
+  {n:26,s:'Fe',name:'Ferro',m:55.85,cat:'transition',g:8,p:4},{n:29,s:'Cu',name:'Rame',m:63.55,cat:'transition',g:11,p:4},
+  {n:30,s:'Zn',name:'Zinco',m:65.38,cat:'transition',g:12,p:4},{n:35,s:'Br',name:'Bromo',m:79.90,cat:'halogen',g:17,p:4},
+  {n:47,s:'Ag',name:'Argento',m:107.9,cat:'transition',g:11,p:5},{n:53,s:'I',name:'Iodio',m:126.9,cat:'halogen',g:17,p:5},
+  {n:79,s:'Au',name:'Oro',m:197.0,cat:'transition',g:11,p:6},{n:80,s:'Hg',name:'Mercurio',m:200.6,cat:'transition',g:12,p:6},
+  {n:82,s:'Pb',name:'Piombo',m:207.2,cat:'post',g:14,p:6}
+];
+
+const catColorsT = {alkali:'#ef4444',alkaline:'#f97316',transition:'#eab308',post:'#22c55e',metalloid:'#14b8a6',nonmetal:'#3b82f6',halogen:'#6366f1',noble:'#a855f7'};
+const catNames = {alkali:'Metalli alcalini',alkaline:'Alcalino-terrosi',transition:'Transizione',post:'Post-transizione',metalloid:'Semimetalli',nonmetal:'Non metalli',halogen:'Alogeni',noble:'Gas nobili'};
+
+function renderTavola() {
+  const search = document.getElementById('searchTavola').value.toLowerCase();
+  const filtered = elements.filter(e => e.name.toLowerCase().includes(search) || e.s.toLowerCase().includes(search) || e.n.toString().includes(search));
+  const c = document.getElementById('tavolaContent');
+
+  if (search) {
+    c.innerHTML = `<div class="grid-3">${filtered.map(e => `
+      <button class="element" style="background:${catColorsT[e.cat]};aspect-ratio:auto;padding:12px" onclick="showElement(${e.n})">
+        <div style="font-size:10px;opacity:.8">${e.n}</div>
+        <div style="font-size:24px;font-weight:700">${e.s}</div>
+        <div style="font-size:11px">${e.name}</div>
+        <div style="font-size:10px;opacity:.8">${e.m}</div>
+      </button>
+    `).join('')}</div>`;
+  } else {
+    c.innerHTML = `
+      <div class="grid-3" style="margin-bottom:16px">
+        ${Object.entries(catNames).map(([k,v]) => `<div style="display:flex;align-items:center;gap:6px;font-size:11px"><div style="width:14px;height:14px;border-radius:3px;background:${catColorsT[k]}"></div>${v}</div>`).join('')}
+      </div>
+      <div class="grid-3">${elements.map(e => `
+        <button class="element" style="background:${catColorsT[e.cat]}" onclick="showElement(${e.n})">
+          <div class="element-num">${e.n}</div>
+          <div class="element-sym">${e.s}</div>
+          <div style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%">${e.name}</div>
+        </button>
+      `).join('')}</div>
+    `;
+  }
+}
+
+function showElement(n) {
+  const e = elements.find(x => x.n === n);
+  if (!e) return;
+  showModal(`
+    <div class="modal-title"><span>Dettagli Elemento</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px">
+      <div style="width:80px;height:80px;background:${catColorsT[e.cat]};border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff">
+        <div style="font-size:32px;font-weight:700">${e.s}</div>
+      </div>
+      <div>
+        <h2 style="font-size:24px;font-weight:700">${e.name}</h2>
+        <p style="color:#6b7280;font-size:13px">${catNames[e.cat]}</p>
+      </div>
+    </div>
+    <div style="background:#f9fafb;border-radius:8px;padding:12px">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb"><span style="color:#6b7280">Numero atomico</span><strong>${e.n}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb"><span style="color:#6b7280">Simbolo</span><strong>${e.s}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb"><span style="color:#6b7280">Massa atomica</span><strong>${e.m} u</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb"><span style="color:#6b7280">Gruppo</span><strong>${e.g}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:#6b7280">Periodo</span><strong>${e.p}</strong></div>
+    </div>
+  `);
+}
+
+// ============ PDF ============
+function handlePdfUpload(e) {
+  const files = e.target.files;
+  Array.from(files).forEach(file => {
+    if (file.type !== 'application/pdf') { alert('Caricare solo file PDF'); return; }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      state.pdfs.push({id: Date.now().toString() + Math.random().toString(36).substr(2,9), name: file.name, url: ev.target.result, date: new Date().toLocaleDateString('it-IT')});
+      save('pdf-files', state.pdfs);
+      renderPdfs();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function renderPdfs() {
+  const list = document.getElementById('pdfList');
+  if (state.pdfs.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-title">Nessun documento caricato</div><div class="empty-state-sub">Carica il primo PDF per consultarlo</div></div>';
+    return;
+  }
+  list.innerHTML = state.pdfs.map(p => `
+    <div class="pdf-item">
+      <div class="pdf-icon">📄</div>
+      <div class="pdf-info"><div class="pdf-name">${escapeHtml(p.name)}</div><div class="pdf-date">Caricato il ${p.date}</div></div>
+      <button class="icon-btn primary" onclick="viewPdf('${p.id}')">👁️</button>
+      <button class="icon-btn danger" onclick="deletePdf('${p.id}')">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function viewPdf(id) {
+  const p = state.pdfs.find(x => x.id === id);
+  if (!p) return;
+  showModal(`
+    <div class="modal-title"><span>${escapeHtml(p.name)}</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <iframe src="${p.url}" style="width:100%;height:70vh;border:none;border-radius:8px"></iframe>
+  `, true);
+}
+
+function deletePdf(id) {
+  if (!confirm('Eliminare questo documento?')) return;
+  state.pdfs = state.pdfs.filter(p => p.id !== id);
+  save('pdf-files', state.pdfs);
+  renderPdfs();
+}
+
+// ============ GHS PICTOGRAMS ============
+function ghsSvg(id, size) {
+  size = size || 48;
+  const diamond = `<polygon points="50,5 95,50 50,95 5,50" fill="white" stroke="#d32f2f" stroke-width="4"/>`;
+  const svgs = {
+    ghs01: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<circle cx="50" cy="60" r="12" fill="#1a1a1a"/><line x1="50" y1="48" x2="50" y2="35" stroke="#1a1a1a" stroke-width="3"/><polygon points="50,15 53,22 60,18 55,25 62,28 54,30 57,38 50,33 43,38 46,30 38,28 45,25 40,18 47,22" fill="#d32f2f"/></svg>`,
+    ghs02: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<path d="M50,20 C50,20 35,40 35,55 C35,65 42,75 50,75 C58,75 65,65 65,55 C65,40 50,20 50,20 Z" fill="#1a1a1a"/><path d="M50,35 C50,35 42,48 42,58 C42,64 46,70 50,70 C54,70 58,64 58,58 C58,48 50,35 50,35 Z" fill="#d32f2f"/></svg>`,
+    ghs03: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<circle cx="50" cy="65" r="18" fill="none" stroke="#1a1a1a" stroke-width="4"/><path d="M50,18 C50,18 38,35 38,48 C38,55 43,62 50,62 C57,62 62,55 62,48 C62,35 50,18 50,18 Z" fill="#1a1a1a"/></svg>`,
+    ghs04: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<rect x="38" y="25" width="24" height="50" rx="12" fill="#1a1a1a"/><rect x="44" y="18" width="12" height="10" rx="2" fill="#1a1a1a"/></svg>`,
+    ghs05: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<path d="M30,70 L30,50 L35,45 L35,35 L40,30 L40,40 L45,35 L45,45 L50,40 L50,50 L55,45 L55,55 L50,60 L50,70 Z" fill="#1a1a1a"/><path d="M60,30 C60,30 55,40 55,45 C55,48 57,50 60,50 C63,50 65,48 65,45 C65,40 60,30 60,30 Z" fill="#1a1a1a"/></svg>`,
+    ghs06: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<ellipse cx="50" cy="42" rx="16" ry="18" fill="#1a1a1a"/><ellipse cx="43" cy="40" rx="4" ry="5" fill="white"/><ellipse cx="57" cy="40" rx="4" ry="5" fill="white"/><line x1="35" y1="65" x2="65" y2="75" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><line x1="65" y1="65" x2="35" y2="75" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/></svg>`,
+    ghs07: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<rect x="46" y="22" width="8" height="38" rx="4" fill="#1a1a1a"/><circle cx="50" cy="72" r="5" fill="#1a1a1a"/></svg>`,
+    ghs08: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<circle cx="50" cy="28" r="8" fill="#1a1a1a"/><path d="M38,40 L62,40 L60,60 L55,60 L55,75 L45,75 L45,60 L40,60 Z" fill="#1a1a1a"/><polygon points="50,45 52,50 57,50 53,53 55,58 50,55 45,58 47,53 43,50 48,50" fill="#d32f2f"/></svg>`,
+    ghs09: `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${diamond}<line x1="35" y1="70" x2="35" y2="35" stroke="#1a1a1a" stroke-width="3"/><line x1="35" y1="45" x2="28" y2="38" stroke="#1a1a1a" stroke-width="2"/><line x1="35" y1="50" x2="42" y2="43" stroke="#1a1a1a" stroke-width="2"/><ellipse cx="62" cy="55" rx="12" ry="7" fill="#1a1a1a"/><polygon points="74,55 82,48 82,62" fill="#1a1a1a"/></svg>`
+  };
+  return svgs[id] || '';
+}
+
+const ghsData = [
+  {id:'ghs01',name:'Esplosivo',desc:'Sostanze esplosive, autorattivi e perossidi organici',ex:['Perossidi organici','Nitroglicerina','TNT'],prec:['Evitare urti e sfregamento','Non esporre al calore']},
+  {id:'ghs02',name:'Infiammabile',desc:'Gas, aerosol e liquidi infiammabili',ex:['Etanolo','Acetone','Etere etilico','Esano'],prec:['Tenere lontano da fiamme','Non fumare']},
+  {id:'ghs03',name:'Comburente',desc:'Sostanze che possono provocare o aggravare un incendio',ex:['H₂O₂','Nitrato di potassio','Permanganato di potassio'],prec:['Tenere lontano da combustibili']},
+  {id:'ghs04',name:'Gas sotto pressione',desc:'Gas compressi, liquefatti o disciolti',ex:['Azoto compresso','Elio','CO₂ in bombole'],prec:['Proteggere dai raggi solari','Non esporre a T > 50°C']},
+  {id:'ghs05',name:'Corrosivo',desc:'Gravi ustioni cutanee e lesioni oculari',ex:['H₂SO₄','HCl','NaOH','HNO₃'],prec:['Indossare guanti e occhiali','Lavare immediatamente in caso di contatto']},
+  {id:'ghs06',name:'Tossico',desc:'Tossico per via orale, cutanea o inalazione',ex:['Cianuro di potassio','Metanolo','Cloroformio'],prec:['Non inalare','Contattare centro antiveleni']},
+  {id:'ghs07',name:'Irritante/Nocivo',desc:'Irritante per pelle e occhi; nocivo',ex:['Acido acetico diluito','Sali di metalli pesanti'],prec:['Non inalare vapori','Lavarsi dopo l\'uso']},
+  {id:'ghs08',name:'Pericoloso per la salute',desc:'Cancerogeno, mutageno, tossico per la riproduzione',ex:['Formaldeide','Benzene','Cromati'],prec:['Evitare il contatto','Usare in aree ventilate']},
+  {id:'ghs09',name:'Pericoloso per l\'ambiente',desc:'Tossico per organismi acquatici',ex:['Sali di mercurio','Pesticidi','Solventi clorurati'],prec:['Non disperdere nell\'ambiente','Smaltire come rifiuto speciale']}
+];
+
+function renderGhs() {
+  document.getElementById('ghsGrid').innerHTML = ghsData.map(g => `
+    <button class="ghs-item" onclick="showGhs('${g.id}')">
+      ${ghsSvg(g.id, 52)}
+      <div class="ghs-label">${g.name}</div>
+    </button>
+  `).join('');
+}
+
+function showGhs(id) {
+  const g = ghsData.find(x => x.id === id);
+  showModal(`
+    <div class="modal-title"><span>${g.name}</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div style="text-align:center;margin-bottom:16px">${ghsSvg(g.id, 80)}</div>
+    <p style="font-size:13px;color:#374151;margin-bottom:12px">${g.desc}</p>
+    <h4 style="font-size:13px;font-weight:600;margin-bottom:8px">🧪 Esempi comuni:</h4>
+    <ul style="margin-left:20px;margin-bottom:12px;font-size:13px;color:#374151">${g.ex.map(e => `<li style="margin:4px 0">• ${e}</li>`).join('')}</ul>
+    <h4 style="font-size:13px;font-weight:600;margin-bottom:8px">🛡️ Precauzioni:</h4>
+    <ul style="margin-left:20px;margin-bottom:12px;font-size:13px;color:#374151">${g.prec.map(p => `<li style="margin:4px 0">✓ ${p}</li>`).join('')}</ul>
+  `);
+}
+
+// ============ PRIMO SOCCORSO ============
+const psData = [
+  {id:'pelle',icon:'💧',title:'Contatto con la pelle',color:'#fee2e2',border:'#fca5a5',items:['Rimuovere vestiti contaminati','Sciacquare con acqua corrente per 15-20 min','Non applicare creme senza consulto medico','Contattare medico se ustione estesa']},
+  {id:'occhi',icon:'👁️',title:'Contatto con gli occhi',color:'#ffedd5',border:'#fdba74',items:['Lavare con acqua tiepida per 15-20 min','Tenere palpebre aperte','Rimuovere lenti a contatto','Consultare immediatamente oculista']},
+  {id:'inalazione',icon:'💨',title:'Inalazione di vapori',color:'#dbeafe',border:'#93c5fd',items:['Trasportare all\'aria aperta','Mantenere a riposo e al caldo','Se non respira: respirazione artificiale','Chiamare 118 o centro antiveleni']},
+  {id:'ingestione',icon:'⚠️',title:'Ingestione accidentale',color:'#f3e8ff',border:'#c4b5fd',items:['NON provocare il vomito','Sciacquare la bocca con acqua','Chiamare Centro Antiveleni o 118','Portare SDS del prodotto']},
+  {id:'incendio',icon:'🔥',title:'Principio di incendio',color:'#fef3c7',border:'#fcd34d',items:['Attivare allarme e chiamare 115','Per solventi: estintore CO₂ o polvere','MAI acqua su solventi o metalli reattivi','Evacuare seguendo vie di fuga']},
+  {id:'versamento',icon:'💦',title:'Versamento chimico',color:'#dcfce7',border:'#86efac',items:['Evacuare se significativo','Indossare DPI','Acidi: neutralizzare con bicarbonato','Basi: neutralizzare con acido acetico diluito','Smaltire come rifiuto speciale']}
+];
+
+function renderPrimoSoccorso() {
+  document.getElementById('primoSoccorsoList').innerHTML = psData.map(p => `
+    <div class="accordion" style="border-color:${p.border};background:${p.color}" id="acc-${p.id}">
+      <button class="accordion-header" onclick="toggleAccordion('${p.id}')">
+        <span style="font-size:20px">${p.icon}</span>
+        <span style="flex:1">${p.title}</span>
+        <span id="acc-icon-${p.id}">+</span>
+      </button>
+      <div class="accordion-content">
+        <ol>${p.items.map(i => `<li>${i}</li>`).join('')}</ol>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAccordion(id) {
+  document.getElementById('acc-' + id).classList.toggle('open');
+  const icon = document.getElementById('acc-icon-' + id);
+  icon.textContent = icon.textContent === '+' ? '−' : '+';
+}
+
+// ============ UTILS ============
+function showModal(html, wide) {
+  document.getElementById('modalContent').innerHTML = html;
+  if (wide) document.getElementById('modalContent').style.maxWidth = '900px';
+  else document.getElementById('modalContent').style.maxWidth = '500px';
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(d) {
+  const date = new Date(d + 'T00:00:00');
+  return date.toLocaleDateString('it-IT', {weekday:'short', day:'numeric', month:'short'});
+}
+// ============ COMPOSTI & ACRONIMI (lista unica) ============
+// formato: [sigla, nome, formula, tipo]  tipo: "a"=acronimo, "c"=composto
+const COMPOSTI = [
+["Ac","acetyl","CH3CO","a"],["acac","acetylacetonate","C5H8O2","a"],["ADP","adenosine 5'-diphosphate","C10H15N5O10P2","a"],["AIBN","2,2'-azobisisobutyronitrile","C8H12N4","a"],["AMP","adenosine 5'-monophosphate","C10H14N5O7P","a"],["Ar","aryl","C6H5","a"],["ATP","adenosine 5'-triphosphate","C10H16N5O13P3","a"],["9-BBN","9-borabicyclo[3.3.1]nonyl","C8H14B","a"],["9-BBN-H","9-borabicyclo[3.3.1]nonane","C8H15B","a"],["Bn, Bzl","benzyl","C6H5CH2","a"],["BOC, Boc","tert-butoxycarbonyl","C5H9O2","a"],["BODIPY","dipyrromethene boron difluoride","C9H7BF2N2","a"],["bpy","2,2'-bipyridyl","C10H8N2","a"],["Bu, n-Bu","n-butyl","C4H9","a"],["s-Bu","sec-butyl","C4H9","a"],["t-Bu","tert-butyl","C4H9","a"],["Bz","benzoyl","C6H5CO","a"],["cAMP","adenosine cyclic 3',5'-phosphate","C10H12N5O6P","a"],["CAN","ceric ammonium nitrate","Ce(NH4)2(NO3)6","a"],["CBZ, Cbz","benzyloxycarbonyl","C8H7O2","a"],["cod","1,5-cyclooctadiene","C8H12","a"],["cot","1,3,5,7-cyclooctatetraene","C8H8","a"],["Cp","cyclopentadienyl","C5H5","a"],["m-CPBA","meta-chloroperoxybenzoic acid","C7H5ClO3","a"],["Cy","cyclohexyl","C6H11","a"],["DABCO","1,4-diazabicyclo[2.2.2]octane","C6H12N2","a"],["dansyl","5-(dimethylamino)-1-naphthalenesulfonyl","C12H12NO2S","a"],["DBN","1,5-diazabicyclo[4.3.0]non-5-ene","C7H12N2","a"],["DBU","1,8-diazabicyclo[5.4.0]undec-7-ene","C9H16N2","a"],["DCC","N,N'-dicyclohexylcarbodiimide","C13H22N2","a"],["DCE","1,2-dichloroethane","C2H4Cl2","a"],["DCM","dichloromethane","CH2Cl2","a"],["DDQ","2,3-dichloro-5,6-dicyano-1,4-benzoquinone","C8Cl2N2O2","a"],["DEAD","diethyl azodicarboxylate","C6H10N2O4","a"],["DIBALH","diisobutylaluminum hydride","C8H19Al","a"],["DMA","dimethylacetamide","C4H9NO","a"],["DMAP","4-(N,N-dimethylamino)pyridine","C7H10N2","a"],["DMDO","dimethyldioxirane","C3H6O2","a"],["DME","1,2-dimethoxyethane","C4H10O2","a"],["DMF","dimethylformamide","C3H7NO","a"],["DMPU","1,3-dimethyl-3,4,5,6-tetrahydro-2(1H)-pyrimidinone","C6H12N2O","a"],["DMSO","dimethyl sulfoxide","C2H6OS","a"],["DMT","4,4'-dimethoxyltriphenylmethyl","C21H19O2","a"],["DPS","tert-butyldiphenylsilyl","C16H19Si","a"],["DTT","dithiothreitol","C4H10O2S2","a"],["EDTA","ethylenediaminetetraacetic acid","C10H16N2O8","a"],["Et","ethyl","C2H5","a"],["Fmoc","9-fluorenylmethoxycarbonyl","C15H11O2","a"],["GTP","guanosine 5'-triphosphate","C10H16N5O14P3","a"],["HMPA","hexamethylphosphoric triamide","C6H18N3OP","a"],["LAH","lithium aluminum hydride","H4AlLi","a"],["LDA","lithium diisopropylamide","C6H14LiN","a"],["LHMDS","lithium hexamethyldisilazane","C6H18LiNSi2","a"],["LTMP","lithium 2,2,6,6-tetramethylpiperidide","C9H18LiN","a"],["Me","methyl","CH3","a"],["MEM","(2-methoxyethoxy)methyl","C4H9O2","a"],["Mes","2,4,6-trimethylphenyl (mesityl)","C9H11","a"],["MOM","methoxymethyl","C2H5O","a"],["Ms","methylsulfonyl (mesyl)","CH3SO2","a"],["MTBE","methyl tert-butyl ether","C5H12O","a"],["NAD+","nicotinamide adenine dinucleotide (ox.)","C21H27N7O14P2","a"],["NADH","nicotinamide adenine dinucleotide (rid.)","C21H29N7O14P2","a"],["NBS","N-bromosuccinimide","C4H4BrNO2","a"],["NCS","N-chlorosuccinimide","C4H4ClNO2","a"],["NMO","N-methylmorpholine-N-oxide","C5H11NO2","a"],["NMP","N-methylpyrrolidone","C5H9NO","a"],["PCC","pyridinium chlorochromate","C5H6ClCrNO3","a"],["PDC","pyridinium dichromate","C10H12Cr2N2O7","a"],["Ph","phenyl","C6H5","a"],["piv","pivaloyl","(CH3)3CCO","a"],["PMB","p-methoxybenzyl","CH3OC6H4CH2","a"],["PPTS","pyridinium para-toluenesulfonate","C12H13NO3S","a"],["Pr","propyl","C3H7","a"],["iPr","isopropyl","(CH3)2CH","a"],["py","pyridine","C5H5N","a"],["SEM","2-(trimethylsilyl)ethoxymethyl","C6H15OSi","a"],["TBAB","tetrabutylammonium bromide","C16H36BrN","a"],["TBAC","tetrabutylammonium chloride","C16H36ClN","a"],["TBAF","tetrabutylammonium fluoride","C16H36FN","a"],["TBS","tert-butyldimethylsilyl","(CH3)3CSi(CH3)2","a"],["TBHP","tert-butyl hydroperoxide","(CH3)3COOH","a"],["TCA","trichloroacetic acid","C2HCl3O2","a"],["TEAB","tetraethylammonium bromide","C8H20BrN","a"],["TCNE","tetracyanoethylene","C6N4","a"],["TEMPO","2,2,6,6-tetramethylpiperidin-1-oxyl","C9H18NO","a"],["Tf","trifluoromethanesulfonyl (triflyl)","CF3SO2","a"],["TFA","trifluoroacetic acid","C2HF3O2","a"],["TFAA","trifluoroacetic anhydride","C4F6O3","a"],["THF","tetrahydrofuran","C4H8O","a"],["THP","tetrahydropyran-2-yl","C5H9O","a"],["TIPS","triisopropylsilyl","C9H21Si","a"],["TMAI","tetramethylammonium iodide","C4H12IN","a"],["TMEDA","N,N,N',N'-tetramethylethylenediamine","C6H16N2","a"],["TMS","tetramethylsilane (trimethylsilyl)","Si(CH3)4","a"],["Tr","triphenylmethyl (trityl)","(C6H5)3C","a"],["Ts","para-toluenesulfonyl (tosyl)","CH3C6H4SO2","a"],
+["","Acetaldeide","C2H4O","c"],["","Acetammide","C2H5NO","c"],["","Acetato di ammonio","CH3COONH4","c"],["","Acetato di piombo(II)","Pb(C2H3O2)2","c"],["","Acetato di piombo(IV)","Pb(C2H3O2)4","c"],["","Acetato di sodio","NaC2H3O2","c"],["","Acetato di metile","C3H6O2","c"],["","Acetone","C3H6O","c"],["","Acetonitrile","C2H3N","c"],["","Acido acetico","CH3COOH","c"],["","Acido bromidrico","HBr","c"],["","Acido butirrico","C4H8O2","c"],["","Acido cianidrico","HCN","c"],["","Acido citrico","C6H8O7","c"],["","Acido cloridrico","HCl","c"],["","Acido cloroacetico","C2H3ClO2","c"],["","Acido cloroplatinico","H2PtCl6","c"],["","Acido dicloroacetico","C2H2Cl2O2","c"],["","Acido fluoridrico","HF","c"],["","Acido fluorosilicico","H2SiF6","c"],["","Acido formico","CH2O2","c"],["","Acido fosforico","H3PO4","c"],["","Acido iodico","HIO3","c"],["","Acido iodidrico","HI","c"],["","Acido lattico","C3H6O3","c"],["","Acido maleico","C4H4O4","c"],["","Acido malonico","C3H4O4","c"],["","Acido nitrico","HNO3","c"],["","Acido ossalico","H2C2O4","c"],["","Acido perclorico","HClO4","c"],["","Acido solforico","H2SO4","c"],["","Acido solforoso","H2SO3","c"],["","Acido tartarico","H2C4H4O6","c"],["","Acido tetracloroaurico","HAuCl4","c"],["","Acido tricloroacetico","CCl3COOH","c"],["","Ammoniaca","NH3","c"],["","Arseniato di sodio","Na3AsO4","c"],["","Bicarbonato di potassio","KHCO3","c"],["","Bromato di potassio","KBrO3","c"],["","Bromuro di potassio","KBr","c"],["","Bromuro di sodio","NaBr","c"],["","Bromuro di zinco","ZnBr2","c"],["","1-Butanolo","C4H10O","c"],["","Carbonato di ammonio","(NH4)2CO3","c"],["","Carbonato di potassio","K2CO3","c"],["","Carbonato di sodio","Na2CO3","c"],["","Clorato di potassio","KClO3","c"],["","Clorato di sodio","NaClO3","c"],["","Cloruro di ammonio","NH4Cl","c"],["","Cloruro di antimonio(III)","SbCl3","c"],["","Cloruro di antimonio(V)","SbCl5","c"],["","Cloruro di bario","BaCl2","c"],["","Cloruro di bismuto(III)","BiCl3","c"],["","Cloruro di calcio","CaCl2","c"],["","Cloruro di cromo(III)","CrCl3","c"],["","Cloruro di rame(I)","Cu2Cl2","c"],["","Cloruro di rame(II)","CuCl2","c"],["","Cloruro di ferro(III)","FeCl3","c"],["","Cloruro di litio","LiCl","c"],["","Cloruro di magnesio","MgCl2","c"],["","Cloruro di manganese(II)","MnCl2","c"],["","Cloruro di mercurio(II)","HgCl2","c"],["","Cloruro di nichel","NiCl2","c"],["","Cloruro di piombo(II)","PbCl2","c"],["","Cloruro di potassio","KCl","c"],["","Cloruro di sodio","NaCl","c"],["","Cloruro di stronzio","SrCl2","c"],["","Cloruro di zinco","ZnCl2","c"],["","Cloruro di stagno(II)","SnCl2","c"],["","Cloruro di stagno(IV)","SnCl4","c"],["","Cromato di potassio","K2CrO4","c"],["","Cromato di sodio","Na2CrO4","c"],["","Citrato di sodio","Na3C6H5O7","c"],["","Cloroformio","CHCl3","c"],["","Cloruro d'alluminio","AlCl3","c"],["","Cianuro di potassio","KCN","c"],["","Dicromato di ammonio","(NH4)2Cr2O7","c"],["","Dicromato di potassio","K2Cr2O7","c"],["","Dicromato di sodio","Na2Cr2O7","c"],["","Diidrogenofosfato di potassio","KH2PO4","c"],["","Diidrogenofosfato di sodio","NaH2PO4","c"],["","Dimetilgliossima","(CH3CNOH)2","c"],["","Disodio EDTA","Na2C10H14N2O8","c"],["","Disolfuro di carbonio","CS2","c"],["","Esacianoferrato(II) di potassio","K4Fe(CN)6","c"],["","Esacianoferrato(III) di potassio","K3Fe(CN)6","c"],["","Etanolo","C2H5OH","c"],["","Etere dietilico","(C2H5)2O","c"],["","Fenolo","C6H6O","c"],["","Ferro(II) ammonio solfato","FeSO4+(NH4)2SO4","c"],["","Formaldeide","CH2O","c"],["","Formiato di sodio","HCOONa","c"],["","Fruttosio","C6H12O6","c"],["","Glicerolo","C3H8O3","c"],["","Glicole etilenico","(CH2OH)2","c"],["","Glucosio","C6H12O6","c"],["","Idrossido di ammonio","NH4OH","c"],["","Idrossido di bario","Ba(OH)2","c"],["","Idrossido di calcio","Ca(OH)2","c"],["","Idrossido di potassio","KOH","c"],["","Idrossido di sodio","NaOH","c"],["","Idrazina","N2H4","c"],["","Idrogenocarbonato di sodio","NaHCO3","c"],["","Idrogenofosfato di potassio","K2HPO4","c"],["","Idrogenofosfato di sodio","Na2HPO4","c"],["","Idrogenotartrato di sodio","NaHC4H4O6","c"],["","Iodato di potassio","KIO3","c"],["","Ioduro di potassio","KI","c"],["","Isobutanolo","C4H10O","c"],["","Lattosio","C12H22O11","c"],["","Maltosio","C12H22O11","c"],["","Mannitolo","C6H14O6","c"],["","Metanolo","CH3OH","c"],["","Nicotina","C10H14N2","c"],["","Nitrato di alluminio","Al(NO3)3","c"],["","Nitrato di ammonio","NH4NO3","c"],["","Nitrato di argento","AgNO3","c"],["","Nitrato di bario","Ba(NO3)2","c"],["","Nitrato di bismuto(III)","Bi(NO3)3","c"],["","Nitrato di cadmio","Cd(NO3)2","c"],["","Nitrato di calcio","Ca(NO3)2","c"],["","Nitrato di cromo(III)","Cr(NO3)3","c"],["","Nitrato di cobalto(II)","Co(NO3)2","c"],["","Nitrato di rame(II)","Cu(NO3)2","c"],["","Nitrato di ferro(III)","Fe(NO3)3","c"],["","Nitrato di magnesio","Mg(NO3)2","c"],["","Nitrato di mercurio(II)","Hg(NO3)2","c"],["","Nitrato di nichel","Ni(NO3)2","c"],["","Nitrato di piombo(II)","Pb(NO3)2","c"],["","Nitrato di potassio","KNO3","c"],["","Nitrato di sodio","NaNO3","c"],["","Nitrato di stronzio","Sr(NO3)2","c"],["","Nitrato di zinco","Zn(NO3)2","c"],["","Nitrito di potassio","KNO2","c"],["","Nitrito di sodio","NaNO2","c"],["","Ossalato di ammonio","(NH4)2C2O4","c"],["","Ossido di cromo(VI)","CrO3","c"],["","1-Pentanolo","C5H11OH","c"],["","Permanganato di potassio","KMnO4","c"],["","Perossido di idrogeno","H2O2","c"],["","Fosfato di sodio","Na3PO4","c"],["","Piridina","C5H5N","c"],["","1-Propanolo","CH3CH2CH2OH","c"],["","2-Propanolo","CH3CHOHCH3","c"],["","Resorcinolo","C6H6O2","c"],["","Saccarosio","C12H22O11","c"],["","Solfato di alluminio","Al2(SO4)3","c"],["","Solfato di ammonio","(NH4)2SO4","c"],["","Solfato di argento","Ag2SO4","c"],["","Solfato di cadmio","CdSO4","c"],["","Solfato di calcio","CaSO4","c"],["","Solfato di cromo(III)","Cr2(SO4)3","c"],["","Solfato di cobalto(II)","CoSO4","c"],["","Solfato di rame(II)","CuSO4","c"],["","Solfato di ferro(II)","FeSO4","c"],["","Solfato di ferro(III)","Fe2(SO4)3","c"],["","Solfato di magnesio","MgSO4","c"],["","Solfato di manganese(II)","MnSO4","c"],["","Solfato di mercurio(II)","HgSO4","c"],["","Solfato di nichel","NiSO4","c"],["","Solfato di potassio","K2SO4","c"],["","Solfato di sodio","Na2SO4","c"],["","Solfato di stronzio","SrSO4","c"],["","Solfato di zinco","ZnSO4","c"],["","Solfito di potassio","K2SO3","c"],["","Solfito di sodio","Na2SO3","c"],["","Solfuro di sodio","Na2S","c"],["","Tartrato di potassio","K2C4H4O6","c"],["","Tartrato di sodio","Na2C4H4O6","c"],["","Tartrato di sodio e potassio","NaKC4H4O6","c"],["","Tiocianato di potassio","KCNS","c"],["","Tiosolfato di sodio","Na2S2O3","c"],["","Tiourea","CH4N2S","c"],["","TRIS","(HOCH2)3CNH2","c"],["","Urea","(NH2)2CO","c"],["","Uretano","C3H7NO2","c"]
+];
+
+function renderComposti() {
+  const q = (document.getElementById('searchComposti').value || '').toLowerCase();
+  const filtered = COMPOSTI.filter(c => (c[0] + ' ' + c[1] + ' ' + c[2]).toLowerCase().includes(q));
+  document.getElementById('compostiCount').textContent = filtered.length + ' voci trovate';
+  const list = document.getElementById('compostiList');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📖</div><div class="empty-state-title">Nessun risultato</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(c => `
+    <div class="list-item">
+      <div class="list-item-content">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          ${c[0] ? `<span style="font-family:monospace;font-weight:700;color:#7e22ce">${escapeHtml(c[0])}</span>` : ''}
+          <div class="list-item-title">${escapeHtml(c[1])}</div>
+          <span class="badge ${c[3] === 'a' ? 'badge-purple' : 'badge-blue'}">${c[3] === 'a' ? 'acronimo' : 'composto'}</span>
+        </div>
+        <div class="list-item-sub" style="font-family:monospace">${escapeHtml(c[2])}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ============ ANTI-BADGE NETLIFY ============
+(function(){
+  function kill(){
+    document.querySelectorAll('body a, body div, body span').forEach(function(el){
+      var t=(el.textContent||'').trim();
+      if(/powered by netlify/i.test(t)&&t.length<40){
+        var n=el;
+        for(var i=0;i<5&&n&&n!==document.body;i++){
+          if(getComputedStyle(n).position==='fixed'){n.style.display='none';return;}
+          n=n.parentElement;
+        }
+        el.style.display='none';
+      }
+    });
+  }
+  kill(); setInterval(kill,2000);
+})();
+
+// ============ MASSA MOLARE ============
+const AW={H:1.008,He:4.003,Li:6.94,Be:9.012,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.18,Na:22.99,Mg:24.305,Al:26.98,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.95,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.63,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.6,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.5,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Th:232.04,U:238.03};
+function parseFormula(f){
+  f=f.replace(/·|•|\*/g,'.');
+  function parse(s,i){
+    const counts={};
+    while(i<s.length){
+      const ch=s[i];
+      if(ch==='('||ch==='['){
+        const r=parse(s,i+1); i=r.i;
+        let n=''; while(i<s.length&&/\d/.test(s[i]))n+=s[i++];
+        const mul=parseInt(n||'1',10);
+        for(const k in r.c)counts[k]=(counts[k]||0)+r.c[k]*mul;
+      } else if(ch===')'||ch===']'){ return {c:counts,i:i+1};
+      } else if(/[A-Z]/.test(ch)){
+        let sym=ch; i++;
+        while(i<s.length&&/[a-z]/.test(s[i]))sym+=s[i++];
+        let n=''; while(i<s.length&&/[\d.]/.test(s[i]))n+=s[i++];
+        counts[sym]=(counts[sym]||0)+parseFloat(n||'1');
+      } else if(ch==='.'){
+        i++;
+        let n=''; while(i<s.length&&/[\d.]/.test(s[i]))n+=s[i++];
+        const mul=parseFloat(n||'1');
+        const r=parse(s,i); i=r.i;
+        for(const k in r.c)counts[k]=(counts[k]||0)+r.c[k]*mul;
+      } else { i++; }
+    }
+    return {c:counts,i:i};
+  }
+  return parse(f,0).c;
+}
+function calcMM(){
+  const f=document.getElementById('mmFormula').value.trim();
+  const out=document.getElementById('mmResult');
+  if(!f){out.innerHTML='';return;}
+  const c=parseFormula(f);
+  let tot=0,rows='',ok=true;
+  for(const k in c){
+    const w=AW[k];
+    if(w===undefined){ok=false;rows+='<div style="color:#dc2626">Simbolo sconosciuto: <strong>'+k+'</strong></div>';continue;}
+    tot+=w*c[k];
+    rows+='<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e5e7eb;font-size:13px"><span>'+k+' × '+c[k]+'</span><span>'+(w*c[k]).toFixed(3)+'</span></div>';
+  }
+  out.innerHTML=ok?'<div class="result"><strong>MM = '+tot.toFixed(3)+' g/mol</strong><div style="margin-top:8px">'+rows+'</div></div>':'<div class="alert alert-danger"><span>⚠️</span><div>'+rows+'</div></div>';
+}
+
+// ============ ETICHETTE CLP/GHS ============
+let etSel=[];
+function renderEtPick(){
+  const box=document.getElementById('etGhsPick');
+  if(!box)return;
+  box.innerHTML=ghsData.map(g=>'<button type="button" style="border:2px solid '+(etSel.includes(g.id)?'#dc2626':'#e5e7eb')+';background:#fff;border-radius:8px;padding:4px;cursor:pointer" onclick="toggleEt(\''+g.id+'\')">'+ghsSvg(g.id,36)+'</button>').join('');
+}
+function toggleEt(id){ etSel=etSel.includes(id)?etSel.filter(x=>x!==id):[...etSel,id]; renderEtPick(); }
+function stampaEtichetta(){
+  const nome=escapeHtml(document.getElementById('etNome').value.trim());
+  if(!nome){alert('Inserisci il nome della sostanza');return;}
+  const conc=escapeHtml(document.getElementById('etConc').value.trim());
+  const data=document.getElementById('etData').value;
+  const note=escapeHtml(document.getElementById('etNote').value.trim());
+  const pics=etSel.map(id=>ghsSvg(id,90)).join('');
+  const w=window.open('','_blank');
+  w.document.write('<html><head><title>Etichetta '+nome+'</title><style>body{font-family:Arial,sans-serif;padding:20px}.lab{border:3px solid #000;padding:16px;max-width:620px}.lab h1{font-size:24px;margin:0 0 4px}.pics{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.meta{font-size:14px;margin:4px 0}.foot{margin-top:12px;font-size:11px;border-top:1px solid #000;padding-top:6px}</style></head><body><div class="lab"><h1>'+nome+'</h1>'+(conc?'<div class="meta"><strong>Concentrazione:</strong> '+conc+'</div>':'')+(data?'<div class="meta"><strong>Preparata il:</strong> '+data+'</div>':'')+'<div class="pics">'+pics+'</div>'+(note?'<div class="meta"><strong>Indicazioni di pericolo:</strong> '+note+'</div>':'')+'<div class="foot">Laboratorio AR23 - Chimica e Microbiologia · Indossare DPI adeguati · SDS consultabile in app</div></div><script>window.print()<\/script></body></html>');
+  w.document.close();
+}
+
+// ============ RIFIUTI & SMALTIMENTO ============
+const RIFIUTI_GUIDA=[
+ {cat:'Solventi organici alogenati',colore:'Bidone giallo / contenitore HDPE dedicato',es:'DCM, cloroformio, 1,2-dicloroetano',no:'NON mescolare con solventi non alogenati, acidi o ossidanti'},
+ {cat:'Solventi organici non alogenati',colore:'Bidone giallo / contenitore HDPE',es:'Etanolo, acetone, etil acetato',no:'NON con alogenati o ossidanti forti'},
+ {cat:'Acidi inorganici',colore:'Tanica acidi (HDPE)',es:'HCl, H2SO4, HNO3 diluiti',no:'NON con basi, solventi, cianuri, solfuri'},
+ {cat:'Basi',colore:'Tanica basi (HDPE)',es:'NaOH, KOH, ammoniaca',no:'NON con acidi o metalli (Al, Zn)'},
+ {cat:'Sali di metalli pesanti',colore:'Contenitore dedicato metalli',es:'Cr, Hg, Pb, Cd, Ni, Ag',no:'MAI scaricare nel lavandino'},
+ {cat:'Rifiuti biologici / microbiologici',colore:'Sacco rosso autoclavabile',es:'Piastre, colture, puntali contaminati',no:'Autoclavare 121°C 20 min prima del conferimento'},
+ {cat:'Vetreria rotta / taglienti',colore:'Scatola rigida "taglienti"',es:'Vetri rotti, lame, aghi',no:'NON nei sacchi di plastica normali'},
+ {cat:'Rifiuti speciali / non classificati',colore:'Deposito temporaneo + registro',es:'Sostanze ignote, amianto, radioattivi',no:'Contattare ditta specializzata / RSPP'}
+];
+function renderRifiutiGuide(){
+  document.getElementById('rifiutiGuide').innerHTML=RIFIUTI_GUIDA.map(r=>
+    '<div class="list-item"><div class="list-item-content"><div class="list-item-title">🛢️ '+r.cat+'</div><div class="list-item-sub">📦 '+r.colore+'<br>✅ Es.: '+r.es+'<br><span style="color:#dc2626">⛔ '+r.no+'</span></div></div></div>').join('');
+}
+function openRifiutiForm(){
+  showModal('<div class="modal-title"><span>Nuovo Conferimento</span><button class="icon-btn" onclick="closeModal()">✕</button></div>'+
+   '<div class="form-group"><label class="form-label">Categoria</label><select class="select" id="rCat">'+RIFIUTI_GUIDA.map(r=>'<option>'+r.cat+'</option>').join('')+'</select></div>'+
+   '<div class="grid-2"><div class="form-group"><label class="form-label">Quantità (L / kg)</label><input class="input" type="number" step="any" id="rQta" placeholder="Es. 1.5"></div>'+
+   '<div class="form-group"><label class="form-label">Data</label><input class="input" type="date" id="rData" value="'+new Date().toISOString().split('T')[0]+'"></div></div>'+
+   '<div class="form-group"><label class="form-label">Contenitore / Tanica n°</label><input class="input" id="rCont" placeholder="Es. Tanica A3"></div>'+
+   '<div class="form-group"><label class="form-label">Note</label><input class="input" id="rNote"></div>'+
+   '<div class="grid-2" style="margin-top:16px"><button class="btn btn-success" onclick="saveRifiuto()">💾 Salva</button
