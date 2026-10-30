@@ -1,0 +1,17 @@
+{
+  "name": "Laboratorio AR23 - Assistente Tecnico",
+  "short_name": "Lab AR23",
+  "description": "Assistente tecnico per il laboratorio di Chimica e Microbiologia",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
